@@ -57,7 +57,7 @@
                     <div class="col-sm-4 text-muted">Client / B2B Agent</div>
                     <div class="col-sm-8">
                         @if($ticket->customer_id)
-                            <a href="{{ route('crm.customers.show', $ticket->customer_id) }}">{{ $ticket->customer->name ?? '' }}</a>
+                            <a href="{{ route('clients.show', $ticket->customer_id) }}">{{ $ticket->customer->name ?? '' }}</a>
                             <span class="badge bg-info bg-opacity-10 text-info ms-2">Retail</span>
                         @elseif($ticket->b2b_agent_id)
                             <a href="#">{{ $ticket->b2bAgent->company_name ?? '' }}</a>
