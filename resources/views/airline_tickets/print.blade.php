@@ -54,9 +54,12 @@
     </div>
 
     <div class="ticket-header d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="fw-bold mb-0" style="color: #2b2c68;">MACT Travel & Tours</h2>
-            <div class="text-muted small">Electronic Ticket / Itinerary Receipt</div>
+        <div class="d-flex align-items-center">
+            <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Company Logo" class="me-3" style="max-height: 60px; object-fit: contain;">
+            <div>
+                <h2 class="fw-bold mb-0" style="color: #2b2c68;">MACT Travel & Tours</h2>
+                <div class="text-muted small">Electronic Ticket / Itinerary Receipt</div>
+            </div>
         </div>
         <div class="text-end">
             <h4 class="fw-bold mb-0 text-primary">PNR: {{ $ticket->pnr }}</h4>

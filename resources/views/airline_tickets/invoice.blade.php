@@ -42,14 +42,19 @@
 <div class="card invoice-card mb-4">
     <div class="card-body p-5">
         <!-- Header -->
-        <div class="row invoice-header">
+        <div class="row invoice-header align-items-center">
             <div class="col-sm-6">
-                <h2 class="fw-bold" style="color: #2b2c68;">MACT Travel & Tours</h2>
-                <div class="text-muted">
-                    123 Business Avenue, Block A<br>
-                    City, Country<br>
-                    Phone: +1 234 567 8900<br>
-                    Email: info@macttravel.com
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Company Logo" class="me-3" style="max-height: 80px; object-fit: contain;">
+                    <div>
+                        <h2 class="fw-bold mb-1" style="color: #2b2c68;">MACT Travel & Tours</h2>
+                        <div class="text-muted">
+                            123 Business Avenue, Block A<br>
+                            City, Country<br>
+                            Phone: +1 234 567 8900<br>
+                            Email: info@macttravel.com
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-6 text-sm-end mt-4 mt-sm-0">

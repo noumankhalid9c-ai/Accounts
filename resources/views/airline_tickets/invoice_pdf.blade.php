@@ -112,11 +112,14 @@
         <table>
             <tr>
                 <td width="60%">
-                    <div class="company-name">MACT Travel & Tours</div>
-                    <div class="company-details">
-                        123 Business Avenue, Block A<br>
-                        City, Country<br>
-                        Phone: +1 234 567 8900 | Email: info@macttravel.com
+                    <img src="{{ public_path('MADINA-LOGO-3.png') }}" style="max-height: 60px; float: left; margin-right: 15px;" alt="Logo">
+                    <div style="float: left;">
+                        <div class="company-name">MACT Travel & Tours</div>
+                        <div class="company-details">
+                            123 Business Avenue, Block A<br>
+                            City, Country<br>
+                            Phone: +1 234 567 8900 | Email: info@macttravel.com
+                        </div>
                     </div>
                 </td>
                 <td width="40%" style="text-align: right;">
