@@ -158,6 +158,44 @@ class AirlineTicketController extends Controller
         return redirect()->route('airline-tickets.show', $ticket->id)->with('success', 'Ticket created successfully.');
     }
 
+    public function edit(AirlineTicket $ticket)
+    {
+        // Load the view for editing
+        return view('airline_tickets.edit', compact('ticket'));
+    }
+
+    public function update(Request $request, AirlineTicket $ticket)
+    {
+        $request->validate([
+            'ticket_status' => 'required|string',
+            'pnr' => 'required|string',
+            'ticket_date' => 'required|date',
+            'base_fare' => 'nullable|numeric',
+            'taxes' => 'nullable|numeric',
+            'total_fare' => 'required|numeric',
+        ]);
+
+        $ticket->update([
+            'ticket_status' => $request->ticket_status,
+            'pnr' => $request->pnr,
+            'ticket_date' => $request->ticket_date,
+            'base_fare' => $request->base_fare ?? 0,
+            'taxes' => $request->taxes ?? 0,
+            'total_fare' => $request->total_fare,
+        ]);
+
+        $this->updateFinancials($ticket);
+
+        return redirect()->route('airline-tickets.index')->with('success', 'Ticket updated successfully.');
+    }
+
+    public function destroy(AirlineTicket $ticket)
+    {
+        $ticket->delete();
+        return redirect()->route('airline-tickets.index')->with('success', 'Ticket deleted successfully.');
+    }
+
+
     public function show(AirlineTicket $airlineTicket)
     {
         $airlineTicket->load(['segments.airline', 'segments.departureAirport', 'segments.arrivalAirport', 'passengers', 'payments', 'invoice', 'customer']);

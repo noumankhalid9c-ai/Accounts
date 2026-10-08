@@ -58,15 +58,15 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label class="form-label">Basic Fare</label>
-                            <input type="number" step="0.01" name="basic_fare" id="basic_fare" class="form-control" value="{{ $ticket->basic_fare }}" oninput="calculateTotals()">
+                            <input type="number" step="0.01" name="base_fare" id="base_fare" class="form-control" value="{{ $ticket->base_fare }}" oninput="calculateTotals()">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Taxes</label>
-                            <input type="number" step="0.01" name="tax_amount" id="tax_amount" class="form-control" value="{{ $ticket->tax_amount }}" oninput="calculateTotals()">
+                            <input type="number" step="0.01" name="taxes" id="taxes" class="form-control" value="{{ $ticket->taxes }}" oninput="calculateTotals()">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Supplier Total (Net)</label>
-                            <input type="number" step="0.01" name="supplier_total" id="supplier_total" class="form-control" value="{{ $ticket->supplier_total }}" readonly>
+                            <input type="number" step="0.01" name="supplier_total" id="supplier_total" class="form-control" value="{{ $ticket->base_fare + $ticket->taxes }}" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label fw-bold text-primary">Selling Price (Total) *</label>
@@ -87,8 +87,8 @@
 
 <script>
     function calculateTotals() {
-        const basic = parseFloat(document.getElementById('basic_fare').value) || 0;
-        const tax = parseFloat(document.getElementById('tax_amount').value) || 0;
+        const basic = parseFloat(document.getElementById('base_fare').value) || 0;
+        const tax = parseFloat(document.getElementById('taxes').value) || 0;
         
         const supplier = basic + tax;
         document.getElementById('supplier_total').value = supplier.toFixed(2);

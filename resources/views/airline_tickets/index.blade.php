@@ -40,7 +40,7 @@
                         @forelse($tickets as $ticket)
                         <tr>
                             <td>#{{ $ticket->id }}</td>
-                            <td>{{ \Carbon\Carbon::parse($ticket->issue_date)->format('d M Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($ticket->ticket_date)->format('d M Y') }}</td>
                             <td class="fw-bold">
                                 @if($ticket->customer_id)
                                     {{ $ticket->customer->name ?? 'N/A' }} <span class="badge bg-info bg-opacity-10 text-info">Retail</span>
@@ -52,7 +52,7 @@
                             </td>
                             <td><span class="badge bg-light text-dark border">{{ $ticket->pnr ?? 'N/A' }}</span></td>
                             <td>{{ $ticket->passengers_count ?? $ticket->passengers->count() }}</td>
-                            <td class="fw-bold">{{ number_format($ticket->total_amount, 2) }}</td>
+                            <td class="fw-bold">{{ number_format($ticket->total_fare, 2) }}</td>
                             <td>
                                 @if($ticket->ticket_status == 'Confirmed' || $ticket->ticket_status == 'Issued')
                                     <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill">{{ $ticket->ticket_status }}</span>
