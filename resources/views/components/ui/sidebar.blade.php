@@ -32,6 +32,44 @@
                 <i class="bi bi-briefcase-fill"></i>
                 <span>B2B Agent Management</span>
             </a>
+            
+            <!-- Airline Tickets -->
+            <a class="nav-link {{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#airlineTicketsCollapse" role="button" aria-expanded="{{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') ? 'true' : 'false' }}" aria-controls="airlineTicketsCollapse">
+                <i class="bi bi-ticket-detailed-fill"></i>
+                <span>Airline Tickets</span>
+                <i class="bi bi-chevron-down ms-auto" style="font-size: 0.8rem; transition: transform 0.2s;"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') ? 'show' : '' }}" id="airlineTicketsCollapse" style="background: rgba(0,0,0,0.15); border-radius: 8px; margin: 0.25rem 0.75rem;">
+                <div class="nav flex-column" style="padding: 0.5rem 0;">
+                    <a href="{{ route('airline-tickets.dashboard') }}" class="nav-link {{ request()->routeIs('airline-tickets.dashboard') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-speedometer2" style="font-size: 1rem;"></i> Dashboard
+                    </a>
+                    <a href="{{ route('airline-tickets.index') }}" class="nav-link {{ request()->routeIs('airline-tickets.index') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-list-ul" style="font-size: 1rem;"></i> All Tickets
+                    </a>
+                    <a href="{{ route('airline-tickets.create') }}" class="nav-link {{ request()->routeIs('airline-tickets.create') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-plus-circle" style="font-size: 1rem;"></i> Add Ticket
+                    </a>
+                    <a href="{{ route('airline-tickets.today') }}" class="nav-link {{ request()->routeIs('airline-tickets.today') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-calendar-day" style="font-size: 1rem;"></i> Today's Flights
+                    </a>
+                    <a href="{{ route('airline-tickets.upcoming') }}" class="nav-link {{ request()->routeIs('airline-tickets.upcoming') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-calendar-event" style="font-size: 1rem;"></i> Upcoming Flights
+                    </a>
+                    <a href="{{ route('airlines.index') }}" class="nav-link {{ request()->routeIs('airlines.*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-airplane" style="font-size: 1rem;"></i> Airlines
+                    </a>
+                    <a href="{{ route('airports.index') }}" class="nav-link {{ request()->routeIs('airports.*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-geo-alt" style="font-size: 1rem;"></i> Routes
+                    </a>
+                    <a href="{{ route('ticket-invoices.index') }}" class="nav-link {{ request()->routeIs('ticket-invoices.*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-receipt" style="font-size: 1rem;"></i> Ticket Invoices
+                    </a>
+                    <a href="{{ route('ticket-reports.index') }}" class="nav-link {{ request()->routeIs('ticket-reports.*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-bar-chart" style="font-size: 1rem;"></i> Ticket Reports
+                    </a>
+                </div>
+            </div>
             <a href="{{ route('employees.index') }}" class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
                 <i class="bi bi-person-badge-fill"></i>
                 <span>Team / Employees</span>

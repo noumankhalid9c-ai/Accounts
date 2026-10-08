@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\B2bAgent;
 use App\Models\Salary;
 use App\Models\DailyCashRegister;
+use App\Models\TicketFlightSegment;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -60,6 +61,19 @@ class DashboardController extends Controller
             'monthly_profit' => $monthlyProfit,
         ];
 
-        return view('dashboard', compact('stats'));
+        // Airline Ticket Module: Today's and Upcoming Flights
+        $todayFlights = TicketFlightSegment::where('departure_date', $today)
+            ->with(['ticket.passengers', 'airline', 'departureAirport', 'arrivalAirport'])
+            ->orderBy('departure_time')
+            ->get();
+            
+        $upcomingFlights = TicketFlightSegment::where('departure_date', '>', $today)
+            ->where('departure_date', '<=', Carbon::now()->addDays(7)->toDateString())
+            ->with(['ticket.passengers', 'airline', 'departureAirport', 'arrivalAirport'])
+            ->orderBy('departure_date')
+            ->orderBy('departure_time')
+            ->get();
+
+        return view('dashboard', compact('stats', 'todayFlights', 'upcomingFlights'));
     }
 }

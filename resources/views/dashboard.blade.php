@@ -437,6 +437,126 @@
     </div>
 </div>
 
+<!-- Airline Tickets Section -->
+<div class="row g-4 mb-4">
+    <!-- Today's Flights -->
+    <div class="col-12 col-xl-12">
+        <div class="card table-card h-100">
+            <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-1"><i class="bi bi-airplane text-primary me-2"></i>Today's Flights</h5>
+                    <div class="text-muted small">Flights departing today ({{ \Carbon\Carbon::now()->format('d M Y') }})</div>
+                </div>
+                <a href="{{ route('airline-tickets.today') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View All Today's Flights <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Time</th>
+                                <th>Flight</th>
+                                <th>Airline</th>
+                                <th>Route</th>
+                                <th>Passenger/Pax</th>
+                                <th>PNR</th>
+                                <th class="pe-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($todayFlights as $segment)
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">{{ \Carbon\Carbon::parse($segment->departure_time)->format('H:i') }}</td>
+                                <td>{{ $segment->flight_number }}</td>
+                                <td>{{ $segment->airline->name ?? '' }}</td>
+                                <td>{{ $segment->departureAirport->iata_code ?? '' }} <i class="bi bi-arrow-right text-muted mx-1"></i> {{ $segment->arrivalAirport->iata_code ?? '' }}</td>
+                                <td>
+                                    @if($segment->ticket && $segment->ticket->passengers->count() > 0)
+                                        {{ $segment->ticket->passengers->first()->passenger_name }}
+                                        @if($segment->ticket->passengers->count() > 1)
+                                            <span class="badge bg-light text-secondary ms-1">+{{ $segment->ticket->passengers->count() - 1 }}</span>
+                                        @endif
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                                <td><span class="badge bg-light text-dark">{{ $segment->ticket->pnr ?? 'N/A' }}</span></td>
+                                <td class="pe-4">
+                                    @if($segment->ticket)
+                                        @if($segment->ticket->ticket_status == 'Confirmed' || $segment->ticket->ticket_status == 'Issued')
+                                            <span class="badge badge-soft-success rounded-pill px-3 py-2">{{ $segment->ticket->ticket_status }}</span>
+                                        @elseif($segment->ticket->ticket_status == 'Cancelled')
+                                            <span class="badge badge-soft-danger rounded-pill px-3 py-2">{{ $segment->ticket->ticket_status }}</span>
+                                        @else
+                                            <span class="badge badge-soft-warning rounded-pill px-3 py-2">{{ $segment->ticket->ticket_status }}</span>
+                                        @endif
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">No flights departing today.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Upcoming Flights -->
+    <div class="col-12 col-xl-12">
+        <div class="card table-card h-100">
+            <div class="card-header bg-white border-0 p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-1"><i class="bi bi-calendar-event text-info me-2"></i>Upcoming Flights</h5>
+                    <div class="text-muted small">Flights departing in the next 7 days</div>
+                </div>
+                <a href="{{ route('airline-tickets.upcoming') }}" class="btn btn-sm btn-outline-info rounded-pill px-3">View All Upcoming <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Date</th>
+                                <th>Time</th>
+                                <th>Flight</th>
+                                <th>Route</th>
+                                <th>Pax</th>
+                                <th class="pe-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($upcomingFlights->take(5) as $segment)
+                            <tr>
+                                <td class="ps-4 fw-bold">{{ \Carbon\Carbon::parse($segment->departure_date)->format('d M Y') }}</td>
+                                <td class="text-primary">{{ \Carbon\Carbon::parse($segment->departure_time)->format('H:i') }}</td>
+                                <td>{{ $segment->flight_number }} <span class="text-muted small">({{ $segment->airline->code ?? '' }})</span></td>
+                                <td>{{ $segment->departureAirport->iata_code ?? '' }} <i class="bi bi-arrow-right text-muted mx-1"></i> {{ $segment->arrivalAirport->iata_code ?? '' }}</td>
+                                <td>{{ $segment->ticket ? $segment->ticket->passengers->count() : 0 }}</td>
+                                <td class="pe-4">
+                                    @if($segment->ticket)
+                                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">{{ $segment->ticket->ticket_status }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">No upcoming flights found.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Financial Overview Bar Chart

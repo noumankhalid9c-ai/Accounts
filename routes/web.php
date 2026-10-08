@@ -12,6 +12,9 @@ Route::get('/', function () {
 // Public Voucher Verification
 Route::get('/voucher/verify/{token}', [\App\Http\Controllers\TravelVoucherController::class, 'verify'])->name('travel-vouchers.verify');
 
+// Public Ticket Verification
+Route::get('/ticket/verify/{token}', [\App\Http\Controllers\AirlineTicketController::class, 'verify'])->name('airline-tickets.verify');
+
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -69,6 +72,28 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/users', function() { return 'Users'; })->name('users.index');
     Route::get('/settings', function() { return 'Settings'; })->name('settings.index');
+    
+    // Airline Tickets Module
+    Route::get('/airline-tickets/dashboard', [\App\Http\Controllers\AirlineTicketController::class, 'dashboard'])->name('airline-tickets.dashboard');
+    Route::get('/airline-tickets/today', [\App\Http\Controllers\AirlineTicketController::class, 'todayFlights'])->name('airline-tickets.today');
+    Route::get('/airline-tickets/upcoming', [\App\Http\Controllers\AirlineTicketController::class, 'upcomingFlights'])->name('airline-tickets.upcoming');
+    Route::resource('airline-tickets', \App\Http\Controllers\AirlineTicketController::class);
+    Route::get('/airline-tickets/{ticket}/invoice', [\App\Http\Controllers\AirlineTicketController::class, 'invoice'])->name('airline-tickets.invoice');
+    Route::get('/airline-tickets/{ticket}/invoice/pdf', [\App\Http\Controllers\AirlineTicketController::class, 'invoicePdf'])->name('airline-tickets.invoice.pdf');
+    Route::get('/airline-tickets/{ticket}/print', [\App\Http\Controllers\AirlineTicketController::class, 'printTicket'])->name('airline-tickets.print');
+    Route::post('/airline-tickets/{ticket}/payments', [\App\Http\Controllers\AirlineTicketController::class, 'addPayment'])->name('airline-tickets.payments.store');
+    Route::post('/airline-tickets/{ticket}/cancel', [\App\Http\Controllers\AirlineTicketController::class, 'cancel'])->name('airline-tickets.cancel');
+    Route::post('/airline-tickets/{ticket}/reissue', [\App\Http\Controllers\AirlineTicketController::class, 'reissue'])->name('airline-tickets.reissue');
+    
+    // Airline & Airport Master Data
+    Route::resource('airlines', \App\Http\Controllers\AirlineController::class);
+    Route::resource('airports', \App\Http\Controllers\AirportController::class);
+    
+    // Ticket Invoices
+    Route::get('/ticket-invoices', [\App\Http\Controllers\TicketInvoiceController::class, 'index'])->name('ticket-invoices.index');
+    
+    // Ticket Reports
+    Route::get('/ticket-reports', [\App\Http\Controllers\TicketReportController::class, 'index'])->name('ticket-reports.index');
 });
 
 // CRM Routes
