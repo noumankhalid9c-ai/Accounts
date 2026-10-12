@@ -34,12 +34,12 @@
             </a>
             
             <!-- Airline Tickets -->
-            <a class="nav-link {{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#airlineTicketsCollapse" role="button" aria-expanded="{{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') ? 'true' : 'false' }}" aria-controls="airlineTicketsCollapse">
+            <a class="nav-link {{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') || request()->routeIs('polio-invoices.*') ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#airlineTicketsCollapse" role="button" aria-expanded="{{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') || request()->routeIs('polio-invoices.*') ? 'true' : 'false' }}" aria-controls="airlineTicketsCollapse">
                 <i class="bi bi-ticket-detailed-fill"></i>
                 <span>Airline Tickets</span>
                 <i class="bi bi-chevron-down ms-auto" style="font-size: 0.8rem; transition: transform 0.2s;"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') ? 'show' : '' }}" id="airlineTicketsCollapse" style="background: rgba(0,0,0,0.15); border-radius: 8px; margin: 0.25rem 0.75rem;">
+            <div class="collapse {{ request()->routeIs('airline-tickets.*') || request()->routeIs('airlines.*') || request()->routeIs('airports.*') || request()->routeIs('ticket-reports.*') || request()->routeIs('ticket-invoices.*') || request()->routeIs('polio-invoices.*') ? 'show' : '' }}" id="airlineTicketsCollapse" style="background: rgba(0,0,0,0.15); border-radius: 8px; margin: 0.25rem 0.75rem;">
                 <div class="nav flex-column" style="padding: 0.5rem 0;">
                     <a href="{{ route('airline-tickets.dashboard') }}" class="nav-link {{ request()->routeIs('airline-tickets.dashboard') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
                         <i class="bi bi-speedometer2" style="font-size: 1rem;"></i> Dashboard
@@ -65,6 +65,9 @@
                     <a href="{{ route('ticket-invoices.index') }}" class="nav-link {{ request()->routeIs('ticket-invoices.*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
                         <i class="bi bi-receipt" style="font-size: 1rem;"></i> Ticket Invoices
                     </a>
+                    <a href="{{ route('polio-invoices.index') }}" class="nav-link {{ request()->routeIs('polio-invoices.*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-shield-check" style="font-size: 1rem;"></i> Polio Certificate Invoice
+                    </a>
                     <a href="{{ route('ticket-reports.index') }}" class="nav-link {{ request()->routeIs('ticket-reports.*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
                         <i class="bi bi-bar-chart" style="font-size: 1rem;"></i> Ticket Reports
                     </a>
@@ -78,10 +81,38 @@
                 <i class="bi bi-wallet2"></i>
                 <span>Team Salary</span>
             </a>
-            <a href="{{ route('expenses.index') }}" class="nav-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
-                <i class="bi bi-cash-stack"></i>
-                <span>Old Expenses</span>
+            
+            <!-- Monthly Expenses -->
+            <a class="nav-link {{ request()->routeIs('monthly_expenses.*') ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#monthlyExpensesCollapse" role="button" aria-expanded="{{ request()->routeIs('monthly_expenses.*') ? 'true' : 'false' }}" aria-controls="monthlyExpensesCollapse">
+                <i class="bi bi-calendar2-week-fill"></i>
+                <span>Monthly Expenses</span>
+                <i class="bi bi-chevron-down ms-auto" style="font-size: 0.8rem; transition: transform 0.2s;"></i>
             </a>
+            <div class="collapse {{ request()->routeIs('monthly_expenses.*') ? 'show' : '' }}" id="monthlyExpensesCollapse" style="background: rgba(0,0,0,0.15); border-radius: 8px; margin: 0.25rem 0.75rem;">
+                <div class="nav flex-column" style="padding: 0.5rem 0;">
+                    <a href="{{ route('monthly_expenses.dashboard') }}" class="nav-link {{ request()->routeIs('monthly_expenses.dashboard') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-speedometer2" style="font-size: 1rem;"></i> Monthly Expense Dashboard
+                    </a>
+                    <a href="{{ route('monthly_expenses.create') }}" class="nav-link {{ request()->routeIs('monthly_expenses.create') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-plus-circle" style="font-size: 1rem;"></i> Add Monthly Expense
+                    </a>
+                    <a href="{{ route('monthly_expenses.index') }}" class="nav-link {{ request()->routeIs('monthly_expenses.index') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-receipt-cutoff" style="font-size: 1rem;"></i> All Expenses
+                    </a>
+                    <a href="{{ route('monthly_expenses.utility_bills') }}" class="nav-link {{ request()->routeIs('monthly_expenses.utility_bills') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-lightning-charge-fill" style="font-size: 1rem;"></i> Utility Bills
+                    </a>
+                    <a href="{{ route('monthly_expenses.recurring') }}" class="nav-link {{ request()->routeIs('monthly_expenses.recurring*') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-arrow-repeat" style="font-size: 1rem;"></i> Recurring Expenses
+                    </a>
+                    <a href="{{ route('monthly_expenses.reports') }}" class="nav-link {{ request()->routeIs('monthly_expenses.reports*') || request()->routeIs('monthly_expenses.yearly') || request()->routeIs('monthly_expenses.comparison') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-bar-chart-line-fill" style="font-size: 1rem;"></i> Monthly Reports
+                    </a>
+                    <a href="{{ route('monthly_expenses.categories') }}" class="nav-link {{ request()->routeIs('monthly_expenses.categories') ? 'active' : '' }}" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                        <i class="bi bi-tags-fill" style="font-size: 1rem;"></i> Expense Categories
+                    </a>
+                </div>
+            </div>
             <a href="{{ route('bookings.index') }}" class="nav-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}">
                 <i class="bi bi-database-fill"></i>
                 <span>Client Data Record</span>

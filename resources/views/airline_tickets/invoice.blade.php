@@ -47,12 +47,11 @@
                 <div class="d-flex align-items-center">
                     <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Company Logo" class="me-3" style="max-height: 80px; object-fit: contain;">
                     <div>
-                        <h2 class="fw-bold mb-1" style="color: #2b2c68;">MACT Travel & Tours</h2>
+                        <h2 class="fw-bold mb-1" style="color: #2b2c68;">Madina Shareef Travels</h2>
                         <div class="text-muted">
-                            123 Business Avenue, Block A<br>
-                            City, Country<br>
-                            Phone: +1 234 567 8900<br>
-                            Email: info@macttravel.com
+                            211A- GT Road Opposite Brains Baghbanpura, Lahore<br>
+                            Phone: +92 300 1234567<br>
+                            Email: info@madinashareeftravels.pk
                         </div>
                     </div>
                 </div>
@@ -198,7 +197,7 @@
         <div class="row mt-5">
             <div class="col-12 text-center text-muted small border-top pt-4">
                 This is a computer generated invoice/e-ticket and does not require a physical signature.<br>
-                Thank you for choosing MACT Travel & Tours!
+                Thank you for choosing Madina Shareef Travels!
             </div>
         </div>
     </div>

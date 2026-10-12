@@ -126,7 +126,7 @@
                 <img src="{{ asset('MADINA-LOGO-3.png') }}" style="height: 60px; max-width: 100%; object-fit: contain;" alt="Logo">
             </td>
             <td style="width: 70%; vertical-align: top; padding-left: 10px;">
-                <div class="header-title">MACT SERVICES TRAVEL & TOURS</div>
+                <div class="header-title">MADINA SHAREEF TRAVELS</div>
                 
                 <div style="display: flex; flex-wrap: wrap;">
                     <div style="width: 50%;">
@@ -139,7 +139,7 @@
                         </div>
                     </div>
                     <div style="width: 50%; text-align: right; padding-right: 15px;">
-                        <div>Address: Mact Services, Lahore</div>
+                        <div>Address: 211A- GT Road Opposite Brains Baghbanpura, Lahore</div>
                         <div>Whats APP: <span class="fw-bold">{{ $travelVoucher->whatsapp ?? 'N/A' }}</span></div>
                     </div>
                 </div>

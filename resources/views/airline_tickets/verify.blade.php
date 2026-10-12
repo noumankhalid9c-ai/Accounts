@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify E-Ticket | MACT Travel & Tours</title>
+    <title>Verify E-Ticket | Madina Shareef Travels</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -56,7 +56,7 @@
         <div class="col-md-8 col-lg-6">
             
             <div class="text-center mb-4">
-                <div class="company-logo">MACT Travel & Tours</div>
+                <div class="company-logo">Madina Shareef Travels</div>
                 <div class="text-muted small mt-1">E-Ticket Verification Portal</div>
             </div>
 
@@ -66,7 +66,7 @@
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <h2 class="h4 fw-bold mb-1">Authentic Ticket Verified</h2>
-                    <p class="mb-0 text-white-50">This document was issued by MACT Travel & Tours</p>
+                    <p class="mb-0 text-white-50">This document was issued by Madina Shareef Travels</p>
                 </div>
                 
                 <div class="card-body p-4 p-md-5">
@@ -135,12 +135,12 @@
                 </div>
                 
                 <div class="card-footer bg-white text-center p-4 border-top">
-                    <p class="text-muted small mb-0">For questions regarding this ticket, please contact MACT Travel & Tours directly.</p>
+                    <p class="text-muted small mb-0">For questions regarding this ticket, please contact Madina Shareef Travels directly.</p>
                 </div>
             </div>
             
             <div class="text-center mt-4 text-muted small">
-                &copy; {{ date('Y') }} MACT Travel & Tours. All rights reserved.
+                &copy; {{ date('Y') }} Madina Shareef Travels. All rights reserved.
             </div>
             
         </div>

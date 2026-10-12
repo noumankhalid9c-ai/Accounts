@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noydir">
-    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
-    <title>@yield('title', config('app.name', 'App'))</title>
+    <title>@hasSection('title')@yield('title') - @endif{{ config('app.name', 'Madina Shareef Travels') }}</title>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -126,16 +126,21 @@
 <div class="hero-card mb-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end">
         <div>
-            <div class="hero-date-badge">
-                <i class="bi bi-calendar3"></i> {{ \Carbon\Carbon::now()->format('l, F j, Y') }}
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <div class="hero-date-badge mb-0">
+                    <i class="bi bi-calendar3"></i> {{ \Carbon\Carbon::now()->format('l, F j, Y') }}
+                </div>
+                <div class="hero-date-badge mb-0" style="background: rgba(255, 255, 255, 0.2); font-weight: 700;">
+                    <i class="bi bi-building"></i> Madina Shareef Travels
+                </div>
             </div>
             <h2 class="fw-bold mb-2">Good afternoon, {{ Auth::user()->name ?? 'Nouman Khalid' }}! 👋</h2>
-            <p class="text-white-50 mb-0">Here is your financial and business performance overview for today.</p>
+            <p class="text-white-50 mb-0">Welcome to Madina Shareef Travels &bull; Financial & Operations Management Suite.</p>
         </div>
         <div class="d-flex gap-2 mt-4 mt-md-0 flex-wrap">
-            <button class="btn hero-btn"><i class="bi bi-person-plus me-2"></i>Add Client</button>
-            <button class="btn hero-btn"><i class="bi bi-file-earmark-plus me-2"></i>Create Invoice</button>
-            <button class="btn hero-btn"><i class="bi bi-plus-circle me-2"></i>Add Expense</button>
+            <a href="{{ route('clients.create') }}" class="btn hero-btn text-decoration-none"><i class="bi bi-person-plus me-2"></i>Add Client</a>
+            <a href="{{ route('bookings.create') }}" class="btn hero-btn text-decoration-none"><i class="bi bi-calendar-plus me-2"></i>New Booking</a>
+            <a href="{{ route('petty_cash.daily') }}" class="btn hero-btn text-decoration-none"><i class="bi bi-plus-circle me-2"></i>Daily Cash / Expense</a>
         </div>
     </div>
 </div>
@@ -551,6 +556,137 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly Expenses & Utility Bills Section (New Module Integration) -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card table-card">
+            <div class="card-header bg-white border-0 p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-2.5 py-1.5 rounded-pill fw-semibold" style="font-size: 0.75rem;">
+                            <i class="bi bi-wallet2 me-1"></i> Recurring & Utilities
+                        </span>
+                        <span class="text-muted small">&bull; {{ \Carbon\Carbon::now()->format('F Y') }}</span>
+                    </div>
+                    <h5 class="fw-bold mb-1 mt-1 text-dark">Monthly Expenses & Utility Bills</h5>
+                    <div class="text-muted small">Company overhead, recurring subscriptions, and utility bill tracking</div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{{ route('monthly_expenses.reports') }}" class="btn btn-primary rounded-pill px-3 py-2 btn-sm d-inline-flex align-items-center shadow-sm">
+                        <i class="bi bi-file-earmark-text me-1.5"></i> View Monthly Expense Report
+                    </a>
+                    <a href="{{ route('monthly_expenses.dashboard') }}" class="btn btn-outline-secondary rounded-pill px-3 py-2 btn-sm d-inline-flex align-items-center">
+                        <i class="bi bi-speedometer2 me-1.5"></i> Expense Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-body px-4 pt-0 pb-4">
+                <!-- 4 Metrics Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                            <div class="text-muted small fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.7rem;">Current Month Total</div>
+                            <div class="fs-5 fw-bold text-dark mt-1">{{ number_format($monthlyExpenseStats['expenses'] ?? 0, 2) }} <span class="text-muted small fs-6">PKR</span></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Budgeted & incurred overhead</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                            <div class="text-success small fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.7rem;">Total Paid</div>
+                            <div class="fs-5 fw-bold text-success mt-1">{{ number_format($monthlyExpenseStats['paid'] ?? 0, 2) }} <span class="text-muted small fs-6">PKR</span></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Settled payments</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                            <div class="text-warning small fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.7rem;">Pending Balance</div>
+                            <div class="fs-5 fw-bold text-warning mt-1">{{ number_format($monthlyExpenseStats['pending'] ?? 0, 2) }} <span class="text-muted small fs-6">PKR</span></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Awaiting clearance</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                            <div class="text-danger small fw-semibold text-uppercase" style="letter-spacing: 0.5px; font-size: 0.7rem;">Overdue Bills</div>
+                            <div class="fs-5 fw-bold text-danger mt-1">{{ $monthlyExpenseStats['overdue_count'] ?? 0 }} <span class="text-muted small fs-6">bills ({{ number_format($monthlyExpenseStats['overdue_amount'] ?? 0, 0) }} PKR)</span></div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Past due date</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Bill Due Dates mini-table -->
+                <div class="border rounded-3 p-3 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="fw-bold small text-secondary text-uppercase" style="letter-spacing: 0.5px;">
+                            <i class="bi bi-clock-history text-primary me-1"></i> Upcoming Bill Due Dates
+                        </div>
+                        <a href="{{ route('monthly_expenses.utility_bills') }}" class="small text-decoration-none text-primary">Manage Utility Bills &rarr;</a>
+                    </div>
+
+                    @if(isset($monthlyExpenseStats['upcoming']) && count($monthlyExpenseStats['upcoming']) > 0)
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Expense / Bill</th>
+                                        <th>Category</th>
+                                        <th>Provider</th>
+                                        <th class="text-end">Amount (PKR)</th>
+                                        <th class="text-end">Balance Due</th>
+                                        <th>Due Date</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($monthlyExpenseStats['upcoming'] as $bill)
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            {{ $bill->expense_title }}
+                                            @if($bill->consumer_number)
+                                                <span class="text-muted small d-block">A/C: {{ $bill->consumer_number }}</span>
+                                            @endif
+                                        </td>
+                                        <td><span class="badge bg-light text-dark border">{{ $bill->category->name ?? 'Expense' }}</span></td>
+                                        <td>{{ $bill->provider_name ?? '—' }}</td>
+                                        <td class="text-end fw-semibold">{{ number_format($bill->amount, 2) }}</td>
+                                        <td class="text-end text-danger fw-semibold">{{ number_format($bill->remaining_amount, 2) }}</td>
+                                        <td>
+                                            <span class="badge {{ $bill->due_date && $bill->due_date->isPast() ? 'bg-danger' : 'bg-secondary' }}">
+                                                {{ $bill->due_date ? $bill->due_date->format('d M Y') : '—' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            @if($bill->payment_status === 'Paid')
+                                                <span class="badge bg-success">Paid</span>
+                                            @elseif($bill->payment_status === 'Partially Paid')
+                                                <span class="badge bg-warning text-dark">Partial</span>
+                                            @elseif($bill->payment_status === 'Overdue')
+                                                <span class="badge bg-danger">Overdue</span>
+                                            @else
+                                                <span class="badge bg-secondary">Pending</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ route('monthly_expenses.show', $bill->id) }}" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size:0.75rem;">View</a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-3 text-muted small">
+                            <i class="bi bi-check-circle text-success fs-5 d-block mb-1"></i>
+                            No pending or upcoming bills due for this period!
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

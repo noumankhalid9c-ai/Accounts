@@ -49,7 +49,7 @@
             </ul>
         </div>
         <div class="card-footer bg-light text-center py-3 text-muted small border-0">
-            Verified by Mact Services System &bull; {{ date('Y') }}
+            Verified by Madina Shareef Travels System &bull; {{ date('Y') }}
         </div>
     </div>
 </div>

@@ -11,6 +11,9 @@ use App\Models\DailyCashRegister;
 use App\Models\TicketFlightSegment;
 use Carbon\Carbon;
 
+use App\Models\MonthlyExpense;
+use Illuminate\Support\Facades\DB;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -61,6 +64,47 @@ class DashboardController extends Controller
             'monthly_profit' => $monthlyProfit,
         ];
 
+        // Monthly Expenses Module Integration
+        $now = Carbon::now();
+        $currentMonthExpenses = MonthlyExpense::where('expense_month', $now->month)
+            ->where('expense_year', $now->year)
+            ->activeNonCancelled()
+            ->sum('amount');
+
+        $currentMonthPaid = MonthlyExpense::where('expense_month', $now->month)
+            ->where('expense_year', $now->year)
+            ->activeNonCancelled()
+            ->sum('paid_amount');
+
+        $currentMonthPending = max(0, $currentMonthExpenses - $currentMonthPaid);
+
+        $overdueBillsCount = MonthlyExpense::activeNonCancelled()
+            ->where('due_date', '<', Carbon::today())
+            ->whereIn('payment_status', ['Pending', 'Partially Paid', 'Overdue'])
+            ->count();
+
+        $overdueBillsAmount = MonthlyExpense::activeNonCancelled()
+            ->where('due_date', '<', Carbon::today())
+            ->whereIn('payment_status', ['Pending', 'Partially Paid', 'Overdue'])
+            ->sum(DB::raw('amount - paid_amount'));
+
+        $upcomingBills = MonthlyExpense::with('category')
+            ->activeNonCancelled()
+            ->where('due_date', '>=', Carbon::today())
+            ->whereIn('payment_status', ['Pending', 'Partially Paid', 'Overdue'])
+            ->orderBy('due_date')
+            ->take(5)
+            ->get();
+
+        $monthlyExpenseStats = [
+            'expenses' => $currentMonthExpenses,
+            'paid' => $currentMonthPaid,
+            'pending' => $currentMonthPending,
+            'overdue_count' => $overdueBillsCount,
+            'overdue_amount' => $overdueBillsAmount,
+            'upcoming' => $upcomingBills,
+        ];
+
         // Airline Ticket Module: Today's and Upcoming Flights
         $todayFlights = TicketFlightSegment::where('departure_date', $today)
             ->with(['ticket.passengers', 'airline', 'departureAirport', 'arrivalAirport'])
@@ -74,6 +118,6 @@ class DashboardController extends Controller
             ->orderBy('departure_time')
             ->get();
 
-        return view('dashboard', compact('stats', 'todayFlights', 'upcomingFlights'));
+        return view('dashboard', compact('stats', 'todayFlights', 'upcomingFlights', 'monthlyExpenseStats'));
     }
 }
