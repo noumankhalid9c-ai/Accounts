@@ -11,15 +11,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PolioCertificateInvoiceController extends Controller
 {
-    /**
-     * Check if user is Admin
-     */
-    protected function authorizeAdminOnly()
+    public function __construct()
     {
-        $user = auth()->user();
-        if (!$user || ($user->role_id ?? 0) != 1) {
-            abort(403, 'Unauthorized. This action requires Administrator privileges.');
-        }
+        $this->middleware('auth');
+        $this->middleware('permission:polio_invoices.view')->only(['index', 'show', 'printInvoice', 'downloadPdf']);
+        $this->middleware('permission:polio_invoices.create')->only(['create', 'store']);
+        $this->middleware('permission:polio_invoices.edit')->only(['edit', 'update']);
+        $this->middleware('permission:polio_invoices.delete')->only(['destroy', 'deletePayment']);
+        $this->middleware('permission:polio_invoices.payments')->only(['addPayment']);
     }
 
     /**

@@ -10,6 +10,15 @@ use App\Models\AgentCommissionPayment;
 
 class B2bAgentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:b2b.view')->only(['dashboard', 'index', 'show', 'statement']);
+        $this->middleware('permission:b2b.create')->only(['create', 'store']);
+        $this->middleware('permission:b2b.edit')->only(['edit', 'update']);
+        $this->middleware('permission:b2b.delete')->only(['destroy']);
+    }
+
     public function dashboard()
     {
         $totalAgents = B2bAgent::where('status', 'Active')->count();

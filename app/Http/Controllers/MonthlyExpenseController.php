@@ -14,6 +14,16 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class MonthlyExpenseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:monthly_expenses.view')->only(['dashboard', 'index', 'utilityBills', 'recurring', 'reports', 'comparisonReport', 'yearlyReport', 'export', 'printReport', 'categories', 'show', 'viewAttachment']);
+        $this->middleware('permission:monthly_expenses.create')->only(['create', 'store', 'storeRecurring', 'generateRecurring', 'storeCategory']);
+        $this->middleware('permission:monthly_expenses.edit')->only(['edit', 'update', 'updateRecurring', 'updateCategory']);
+        $this->middleware('permission:monthly_expenses.delete')->only(['destroy', 'destroyRecurring', 'destroyCategory', 'deletePayment']);
+        $this->middleware('permission:monthly_expenses.payments')->only(['addPayment']);
+    }
+
     /**
      * Check if current user has permission to manage monthly expenses
      */
@@ -23,17 +33,19 @@ class MonthlyExpenseController extends Controller
         if (!$user) {
             abort(401);
         }
-        // Allow Admin (role_id 1) and Finance/Accountant/Manager (role_id 2 or 3)
-        // Block Sales users (role_id > 3)
-        if (isset($user->role_id) && $user->role_id > 3) {
-            abort(403, 'Unauthorized. Access restricted to Finance and Administration.');
+        
+        // RBAC Permission Check
+        if ($user->isSuperAdmin() || $user->canDo('monthly_expenses.view') || in_array($user->role_id, [1, 2, 3, 5])) {
+            return;
         }
+
+        abort(403, 'Unauthorized. Access restricted to Finance, Administration, and authorized roles.');
     }
 
     protected function authorizeAdminOnly()
     {
         $user = auth()->user();
-        if (!$user || ($user->role_id ?? 0) != 1) {
+        if (!$user || (!$user->isSuperAdmin() && !$user->canDo('monthly_expenses.delete') && ($user->role_id ?? 0) != 1)) {
             abort(403, 'Unauthorized. This action requires Administrator privileges.');
         }
     }

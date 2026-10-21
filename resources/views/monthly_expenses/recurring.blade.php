@@ -108,7 +108,7 @@
                             <button type="button" class="btn btn-sm btn-light border text-secondary" data-bs-toggle="modal" data-bs-target="#editTemplateModal{{ $tmpl->id }}" title="Edit">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            @if(auth()->user() && auth()->user()->role_id == 1)
+                            @if(auth()->user() && (auth()->user()->isSuperAdmin() || auth()->user()->canDo('monthly_expenses.delete')))
                                 <form action="{{ route('monthly_expenses.recurring.destroy', $tmpl->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this recurring expense template?');">
                                     @csrf
                                     @method('DELETE')

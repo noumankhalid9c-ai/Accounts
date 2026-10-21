@@ -213,8 +213,10 @@
                                     <tr>
                                         <th>Voucher No</th>
                                         <th>Type</th>
+                                        <th>Flight No(s)</th>
                                         <th>Date</th>
                                         <th>Pax</th>
+                                        <th>Comments</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -223,17 +225,23 @@
                                     <tr>
                                         <td class="fw-bold">{{ $voucher->voucher_number }}</td>
                                         <td><span class="badge bg-secondary">{{ $voucher->voucher_type }}</span></td>
+                                        <td><span class="badge bg-primary-subtle text-primary border">{{ $voucher->flight_numbers_summary }}</span></td>
                                         <td>{{ $voucher->voucher_date ? $voucher->voucher_date->format('d M Y') : '-' }}</td>
                                         <td>{{ $voucher->pax }}</td>
+                                        <td><small class="text-muted">{{ Str::limit($voucher->comments ?: $voucher->special_instructions, 25) }}</small></td>
                                         <td>
-                                            <a href="{{ route('travel-vouchers.show', $voucher->id) }}" class="btn btn-sm btn-light border"><i class="bi bi-eye"></i> View</a>
-                                            <a href="{{ route('travel-vouchers.print', $voucher->id) }}" target="_blank" class="btn btn-sm btn-light border"><i class="bi bi-printer"></i> Print</a>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{{ route('travel-vouchers.show', $voucher->id) }}" class="btn btn-light border" title="View"><i class="bi bi-eye"></i></a>
+                                                <a href="{{ route('travel-vouchers.edit', $voucher->id) }}" class="btn btn-light border" title="Edit"><i class="bi bi-pencil"></i></a>
+                                                <a href="{{ route('travel-vouchers.print', $voucher->id) }}" target="_blank" class="btn btn-light border text-primary" title="Print"><i class="bi bi-printer"></i></a>
+                                            </div>
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr><td colspan="5" class="text-center py-4 text-muted">No vouchers generated yet.</td></tr>
+                                    <tr><td colspan="7" class="text-center py-4 text-muted">No vouchers generated yet.</td></tr>
                                     @endforelse
                                 </tbody>
+
                             </table>
                         </div>
                     </div>

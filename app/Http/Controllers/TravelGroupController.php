@@ -12,6 +12,15 @@ use Str;
 
 class TravelGroupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:travel_groups.view')->only(['index', 'show']);
+        $this->middleware('permission:travel_groups.create')->only(['create', 'store', 'storeClient', 'storeFlight', 'storeHotel', 'storeTransport']);
+        $this->middleware('permission:travel_groups.edit')->only(['edit', 'update']);
+        $this->middleware('permission:travel_groups.delete')->only(['destroy']);
+    }
+
     public function index()
     {
         $groups = TravelGroup::withCount(['clients', 'vouchers'])->orderBy('id', 'desc')->get();
@@ -118,5 +127,34 @@ class TravelGroupController extends Controller
         ]);
         $travelGroup->transports()->create($data);
         return back()->with('success', 'Transport Added!');
+    }
+
+    public function edit(TravelGroup $travelGroup)
+    {
+        return view('travel_groups.edit', compact('travelGroup'));
+    }
+
+    public function update(Request $request, TravelGroup $travelGroup)
+    {
+        $data = $request->validate([
+            'group_id' => 'required|string|unique:travel_groups,group_id,' . $travelGroup->id,
+            'group_name' => 'required|string|max:255',
+            'service_type' => 'required|string',
+            'destination' => 'nullable|string',
+            'departure_date' => 'nullable|date',
+            'return_date' => 'nullable|date',
+            'group_leader' => 'nullable|string',
+            'status' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+
+        $travelGroup->update($data);
+        return redirect()->route('travel-groups.show', $travelGroup->id)->with('success', 'Travel Group updated successfully!');
+    }
+
+    public function destroy(TravelGroup $travelGroup)
+    {
+        $travelGroup->delete();
+        return redirect()->route('travel-groups.index')->with('success', 'Travel Group deleted successfully!');
     }
 }

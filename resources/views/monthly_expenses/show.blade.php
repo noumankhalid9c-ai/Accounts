@@ -249,7 +249,7 @@
                                     </div>
                                     <div class="text-end">
                                         <span class="text-muted small">{{ $payment->payment_date ? $payment->payment_date->format('d M Y') : '-' }}</span>
-                                        @if(auth()->user() && auth()->user()->role_id == 1)
+                                        @if(auth()->user() && (auth()->user()->isSuperAdmin() || auth()->user()->canDo('monthly_expenses.delete')))
                                             <form action="{{ route('monthly_expenses.payments.destroy', $payment->id) }}" method="POST" class="d-inline ms-2" onsubmit="return confirm('Delete this payment installment? Balance will be recalculated.');">
                                                 @csrf
                                                 @method('DELETE')

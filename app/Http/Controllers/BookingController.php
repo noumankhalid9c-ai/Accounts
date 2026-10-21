@@ -12,6 +12,16 @@ use Carbon\Carbon;
 
 class BookingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:clients.view')->only(['index', 'show', 'generateInvoice']);
+        $this->middleware('permission:clients.create')->only(['create', 'store']);
+        $this->middleware('permission:clients.edit')->only(['edit', 'update']);
+        $this->middleware('permission:clients.delete')->only(['destroy']);
+        $this->middleware('permission:clients.payments')->only(['addPayment']);
+    }
+
     public function index()
     {
         $bookings = Booking::with('client')->withSum('payments', 'amount')->orderBy('id', 'desc')->paginate(15);

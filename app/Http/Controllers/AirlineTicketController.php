@@ -17,6 +17,16 @@ use Illuminate\Support\Str;
 
 class AirlineTicketController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:airline_tickets.view')->only(['dashboard', 'index', 'show', 'todayFlights', 'upcomingFlights', 'invoice', 'invoicePdf', 'printTicket']);
+        $this->middleware('permission:airline_tickets.create')->only(['create', 'store', 'reissue']);
+        $this->middleware('permission:airline_tickets.edit')->only(['edit', 'update']);
+        $this->middleware('permission:airline_tickets.delete')->only(['destroy', 'cancel']);
+        $this->middleware('permission:airline_tickets.payments')->only(['addPayment']);
+    }
+
     public function dashboard()
     {
         $today = now()->format('Y-m-d');
@@ -196,10 +206,9 @@ class AirlineTicketController extends Controller
     }
 
 
-    public function show(AirlineTicket $airlineTicket)
+    public function show(AirlineTicket $ticket)
     {
-        $airlineTicket->load(['segments.airline', 'segments.departureAirport', 'segments.arrivalAirport', 'passengers', 'payments', 'invoice', 'customer']);
-        $ticket = $airlineTicket;
+        $ticket->load(['segments.airline', 'segments.departureAirport', 'segments.arrivalAirport', 'passengers', 'payments', 'invoice', 'customer']);
         return view('airline_tickets.show', compact('ticket'));
     }
     

@@ -213,7 +213,7 @@
                                     <i class="bi bi-file-earmark-pdf"></i>
                                 </a>
                                 <!-- Delete (Admin Only) -->
-                                @if(auth()->user() && auth()->user()->role_id == 1)
+                                @if(auth()->user() && (auth()->user()->isSuperAdmin() || auth()->user()->canDo('polio_invoices.delete')))
                                 <form action="{{ route('polio-invoices.destroy', $inv->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete invoice {{ $inv->invoice_number }}?');">
                                     @csrf
                                     @method('DELETE')

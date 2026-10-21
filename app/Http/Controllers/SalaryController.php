@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class SalaryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:salary.view')->only(['index', 'slip']);
+        $this->middleware('permission:salary.create')->only(['store', 'generate']);
+        $this->middleware('permission:salary.edit')->only(['update']);
+        $this->middleware('permission:salary.delete')->only(['destroy']);
+        $this->middleware('permission:salary.payments')->only(['markPaid', 'markPending']);
+    }
+
     public function index(Request $request)
     {
         $month = $request->input('month', date('n'));

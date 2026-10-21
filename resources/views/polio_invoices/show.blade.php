@@ -235,7 +235,7 @@
                         <td>{{ $pay->creator->name ?? 'System' }}</td>
                         <td><small class="text-muted">{{ $pay->notes ?? '—' }}</small></td>
                         <td class="text-end pe-4">
-                            @if(auth()->user() && auth()->user()->role_id == 1)
+                            @if(auth()->user() && (auth()->user()->isSuperAdmin() || auth()->user()->canDo('polio_invoices.delete')))
                             <form action="{{ route('polio-invoices.payments.destroy', $pay->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this payment installment? Balance will be recalculated.');">
                                 @csrf
                                 @method('DELETE')

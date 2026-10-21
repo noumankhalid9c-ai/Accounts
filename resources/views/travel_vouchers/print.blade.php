@@ -152,23 +152,26 @@
 
     <!-- Green Bar -->
     <div class="green-bar">
-        <div class="green-bar-section bg-green-light" style="width: 40%; color: #000;">
-            <span style="color: #198754;">F.Head</span> &nbsp;&nbsp; {{ strtoupper($travelVoucher->group_head ?? $travelVoucher->travelGroup->group_leader ?? '') }}
+        <div class="green-bar-section bg-green-light" style="width: 35%; color: #000;">
+            <span style="color: #198754;">F.Head</span> &nbsp;&nbsp; {{ strtoupper($travelVoucher->group_head ?? $travelVoucher->travelGroup->group_leader ?? 'N/A') }}
         </div>
-        <div class="green-bar-section bg-green-dark" style="width: 30%; text-align: center;">
+        <div class="green-bar-section bg-green-dark" style="width: 25%; text-align: center;">
             {{ $travelVoucher->voucher_number }}
         </div>
-        <div class="green-bar-section bg-green-light" style="width: 30%; color: #000;">
+        <div class="green-bar-section bg-green-light" style="width: 20%; color: #000;">
             <span style="color: #198754;">Grp:</span> {{ $travelVoucher->travelGroup->group_id }}
+        </div>
+        <div class="green-bar-section bg-green-light" style="width: 20%; color: #000;">
+            <span style="color: #198754;">Flight:</span> <strong>{{ $travelVoucher->flight_numbers_summary }}</strong>
         </div>
     </div>
 
     <!-- FLIGHTS -->
-    <div class="section-header">FLIGHT DETAILS</div>
+    <div class="section-header">FLIGHT DETAILS ({{ $travelVoucher->flight_numbers_summary }})</div>
     <table class="table-custom">
         <tr class="sub-header">
             <th colspan="4" style="background-color: #003399; color: white; border: 1px solid #000;">DEPARTURE</th>
-            <th colspan="4" style="background-color: #003399; color: white; border: 1px solid #000;">ARRIVAL</th>
+            <th colspan="4" style="background-color: #003399; color: white; border: 1px solid #000;">ARRIVAL / RETURN</th>
         </tr>
         <tr class="sub-header">
             <th>Flight</th>
@@ -180,42 +183,83 @@
             <th>Departure</th>
             <th>Arrival</th>
         </tr>
-        @if(!empty($travelVoucher->snapshot_data['flights']))
-            @php
-                $depFlights = array_filter($travelVoucher->snapshot_data['flights'], fn($f) => stripos($f['flight_type'], 'Departure') !== false);
-                $arrFlights = array_filter($travelVoucher->snapshot_data['flights'], fn($f) => stripos($f['flight_type'], 'Return') !== false || stripos($f['flight_type'], 'Arrival') !== false);
-                
-                // If there's no clear separation, we just list them in rows
-                $maxRows = max(count($depFlights) > 0 ? count($depFlights) : 1, count($arrFlights) > 0 ? count($arrFlights) : 1);
-                $depFlights = array_values($depFlights);
-                $arrFlights = array_values($arrFlights);
-            @endphp
-            
+        @php
+            $flights = $travelVoucher->flights;
+            $depFlights = [];
+            $arrFlights = [];
+            $otherFlights = [];
+
+            foreach ($flights as $flt) {
+                $type = strtolower($flt['flight_type'] ?? '');
+                if (str_contains($type, 'dep') || str_contains($type, 'outbound')) {
+                    $depFlights[] = $flt;
+                } elseif (str_contains($type, 'ret') || str_contains($type, 'arr') || str_contains($type, 'inbound')) {
+                    $arrFlights[] = $flt;
+                } else {
+                    $otherFlights[] = $flt;
+                }
+            }
+
+            if (empty($depFlights) && empty($arrFlights) && !empty($otherFlights)) {
+                $depFlights[] = array_shift($otherFlights);
+                if (!empty($otherFlights)) {
+                    $arrFlights = $otherFlights;
+                }
+            } elseif (!empty($otherFlights)) {
+                foreach ($otherFlights as $of) {
+                    if (count($depFlights) <= count($arrFlights)) {
+                        $depFlights[] = $of;
+                    } else {
+                        $arrFlights[] = $of;
+                    }
+                }
+            }
+
+            $maxRows = max(count($depFlights), count($arrFlights), 1);
+            $depFlights = array_values($depFlights);
+            $arrFlights = array_values($arrFlights);
+
+            $formatDateTime = function($d, $t) {
+                if (empty($d)) return '-';
+                try {
+                    $str = \Carbon\Carbon::parse($d)->format('d-M');
+                    if (!empty($t)) {
+                        $str .= ' ' . trim($t);
+                    }
+                    return $str;
+                } catch (\Exception $e) {
+                    return $d . ($t ? ' ' . $t : '');
+                }
+            };
+        @endphp
+
+        @if(!empty($flights))
             @for($i = 0; $i < $maxRows; $i++)
                 <tr>
                     @if(isset($depFlights[$i]))
-                        <td>{{ $depFlights[$i]['flight_number'] ?? '-' }}</td>
-                        <td>{{ $depFlights[$i]['sector'] ?? '-' }}</td>
-                        <td>{{ $depFlights[$i]['departure_date'] ? \Carbon\Carbon::parse($depFlights[$i]['departure_date'])->format('d-M H:i') : '-' }}</td>
-                        <td>{{ $depFlights[$i]['arrival_date'] ? \Carbon\Carbon::parse($depFlights[$i]['arrival_date'])->format('d-M H:i') : '-' }}</td>
+                        <td style="font-weight: bold; color: #000080;">{{ strtoupper($depFlights[$i]['flight_number'] ?? '-') }}</td>
+                        <td>{{ strtoupper($depFlights[$i]['sector'] ?? '-') }}</td>
+                        <td>{{ $formatDateTime($depFlights[$i]['departure_date'] ?? null, $depFlights[$i]['departure_time'] ?? null) }}</td>
+                        <td>{{ $formatDateTime($depFlights[$i]['arrival_date'] ?? null, $depFlights[$i]['arrival_time'] ?? null) }}</td>
                     @else
-                        <td></td><td></td><td></td><td></td>
+                        <td>-</td><td>-</td><td>-</td><td>-</td>
                     @endif
                     
                     @if(isset($arrFlights[$i]))
-                        <td>{{ $arrFlights[$i]['flight_number'] ?? '-' }}</td>
-                        <td>{{ $arrFlights[$i]['sector'] ?? '-' }}</td>
-                        <td>{{ $arrFlights[$i]['departure_date'] ? \Carbon\Carbon::parse($arrFlights[$i]['departure_date'])->format('d-M H:i') : '-' }}</td>
-                        <td>{{ $arrFlights[$i]['arrival_date'] ? \Carbon\Carbon::parse($arrFlights[$i]['arrival_date'])->format('d-M H:i') : '-' }}</td>
+                        <td style="font-weight: bold; color: #000080;">{{ strtoupper($arrFlights[$i]['flight_number'] ?? '-') }}</td>
+                        <td>{{ strtoupper($arrFlights[$i]['sector'] ?? '-') }}</td>
+                        <td>{{ $formatDateTime($arrFlights[$i]['departure_date'] ?? null, $arrFlights[$i]['departure_time'] ?? null) }}</td>
+                        <td>{{ $formatDateTime($arrFlights[$i]['arrival_date'] ?? null, $arrFlights[$i]['arrival_time'] ?? null) }}</td>
                     @else
-                        <td></td><td></td><td></td><td></td>
+                        <td>-</td><td>-</td><td>-</td><td>-</td>
                     @endif
                 </tr>
             @endfor
         @else
-            <tr><td colspan="8">No flights added</td></tr>
+            <tr><td colspan="8" style="padding: 6px; color: #666;">No flight details registered for this voucher</td></tr>
         @endif
     </table>
+
 
     <!-- ACCOMMODATION -->
     <div class="section-header">ACCOMMODATION</div>
@@ -313,13 +357,26 @@
         @endif
     </table>
 
-    <!-- Special Instructions -->
-    <div style="margin-top: 10px;">
-        <div style="color: #000080; font-weight: bold; font-size: 13px;">Special Instructions:</div>
-        <div style="margin-top: 3px;">
-            {{ $travelVoucher->special_instructions ?? 'N/A' }}
+    <!-- Comments & Remarks Box -->
+    <div style="margin-top: 8px; border: 1.5px solid #000080; border-radius: 4px; padding: 6px 10px; background-color: #f8fafc;">
+        <div style="color: #000080; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px; margin-bottom: 4px;">
+            Comments / Remarks:
+        </div>
+        <div style="font-size: 11px; line-height: 1.5; color: #111; min-height: 20px;">
+            {!! nl2br(e($travelVoucher->comments ?: ($travelVoucher->special_instructions ?: 'None'))) !!}
         </div>
     </div>
+
+    @if($travelVoucher->special_instructions && $travelVoucher->comments)
+    <!-- Special Instructions -->
+    <div style="margin-top: 6px; padding: 4px 8px; border: 1px dotted #666; border-radius: 4px;">
+        <div style="color: #000080; font-weight: bold; font-size: 11px;">Special Instructions:</div>
+        <div style="font-size: 10px; line-height: 1.4; color: #333;">
+            {!! nl2br(e($travelVoucher->special_instructions)) !!}
+        </div>
+    </div>
+    @endif
+
 
     <!-- Urdu Instructions -->
     <div class="urdu-text">

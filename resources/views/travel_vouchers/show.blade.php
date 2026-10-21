@@ -10,6 +10,7 @@
     </div>
     <div class="d-flex gap-2">
         <a href="{{ route('travel-groups.show', $travelVoucher->travelGroup->id) }}" class="btn btn-light border"><i class="bi bi-arrow-left"></i> Back to Group</a>
+        <a href="{{ route('travel-vouchers.edit', $travelVoucher->id) }}" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> Edit Voucher</a>
         <a href="{{ route('travel-vouchers.print', $travelVoucher->id) }}" target="_blank" class="btn btn-primary"><i class="bi bi-printer"></i> Print / Download PDF</a>
     </div>
 </div>
@@ -20,13 +21,17 @@
 </x-ui.alert>
 @endif
 
-<div class="row">
+<div class="row g-4">
     <div class="col-12 col-md-4">
         <x-ui.card icon="bi-info-circle" title="Voucher Summary">
             <ul class="list-group list-group-flush mb-3">
                 <li class="list-group-item px-0 d-flex justify-content-between">
                     <span class="text-muted">Type</span>
                     <strong>{{ $travelVoucher->voucher_type }}</strong>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                    <span class="text-muted">Flight No(s)</span>
+                    <span class="badge bg-primary fs-6">{{ $travelVoucher->flight_numbers_summary }}</span>
                 </li>
                 <li class="list-group-item px-0 d-flex justify-content-between">
                     <span class="text-muted">Total Pax</span>
@@ -45,12 +50,31 @@
                     <strong>{{ $travelVoucher->whatsapp ?? 'N/A' }}</strong>
                 </li>
             </ul>
+
+            <!-- Comments Box in Summary -->
+            <div class="card border rounded-3 p-3 mb-3 bg-light">
+                <div class="fw-bold text-dark small mb-1"><i class="bi bi-chat-left-text-fill text-primary me-1"></i> Comments / Remarks:</div>
+                <div class="text-muted small" style="white-space: pre-line;">
+                    {{ $travelVoucher->comments ?: 'No comments provided.' }}
+                </div>
+            </div>
+
+            @if($travelVoucher->special_instructions)
+            <div class="card border rounded-3 p-3 mb-3 bg-light">
+                <div class="fw-bold text-dark small mb-1"><i class="bi bi-info-circle-fill text-info me-1"></i> Special Instructions:</div>
+                <div class="text-muted small" style="white-space: pre-line;">
+                    {{ $travelVoucher->special_instructions }}
+                </div>
+            </div>
+            @endif
+
             <div class="bg-light p-3 rounded">
                 <strong>QR Verification URL:</strong><br>
                 <a href="{{ route('travel-vouchers.verify', $travelVoucher->qr_token) }}" target="_blank" class="small text-break">{{ route('travel-vouchers.verify', $travelVoucher->qr_token) }}</a>
             </div>
         </x-ui.card>
     </div>
+
     <div class="col-12 col-md-8">
         <x-ui.card icon="bi-clock-history" title="Snapshot Data">
             <p class="text-muted small mb-3">This is the read-only data that was captured when the voucher was generated. This ensures the voucher remains authentic even if the group data changes later.</p>
@@ -69,20 +93,37 @@
                 </table>
             </div>
 
-            <h6 class="fw-bold mt-4 border-bottom pb-2">Flights ({{ count($travelVoucher->snapshot_data['flights'] ?? []) }})</h6>
+            <h6 class="fw-bold mt-4 border-bottom pb-2 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-airplane-engines me-2"></i>Flights ({{ count($travelVoucher->flights) }})</span>
+                <span class="badge bg-secondary">Flight No(s): {{ $travelVoucher->flight_numbers_summary }}</span>
+            </h6>
             <div class="table-responsive">
-                <table class="table table-sm table-bordered">
-                    <thead class="table-light"><tr><th>Type</th><th>Flight No</th><th>Sector</th><th>Date</th></tr></thead>
+                <table class="table table-sm table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Type</th>
+                            <th>Flight No</th>
+                            <th>Sector</th>
+                            <th>Departure Date & Time</th>
+                            <th>Arrival Date & Time</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        @forelse($travelVoucher->snapshot_data['flights'] ?? [] as $flight)
-                            <tr><td>{{ $flight['flight_type'] }}</td><td>{{ $flight['flight_number'] ?? '-' }}</td><td>{{ $flight['sector'] ?? '-' }}</td>
-                            <td>{{ substr($flight['departure_date'], 0, 10) }}</td></tr>
+                        @forelse($travelVoucher->flights as $flight)
+                            <tr>
+                                <td><span class="badge bg-secondary">{{ $flight['flight_type'] ?? '-' }}</span></td>
+                                <td class="fw-bold text-primary fs-6">{{ $flight['flight_number'] ?? '-' }}</td>
+                                <td class="fw-medium">{{ $flight['sector'] ?? '-' }}</td>
+                                <td>{{ !empty($flight['departure_date']) ? substr($flight['departure_date'], 0, 10) : '-' }} {{ $flight['departure_time'] ?? '' }}</td>
+                                <td>{{ !empty($flight['arrival_date']) ? substr($flight['arrival_date'], 0, 10) : '-' }} {{ $flight['arrival_time'] ?? '' }}</td>
+                            </tr>
                         @empty
-                            <tr><td colspan="4" class="text-muted">No flights in snapshot</td></tr>
+                            <tr><td colspan="5" class="text-muted text-center py-3">No flights registered for this voucher</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
 
             <h6 class="fw-bold mt-4 border-bottom pb-2">Hotels ({{ count($travelVoucher->snapshot_data['hotels'] ?? []) }})</h6>
             <div class="table-responsive">

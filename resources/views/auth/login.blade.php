@@ -96,7 +96,21 @@
                     <div class="form-text small text-muted">Solve this simple math challenge to protect against bot attacks.</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2 fs-6">Sign In</button>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
+                        <label class="form-check-label small text-muted user-select-none" for="rememberMe">
+                            Remember session
+                        </label>
+                    </div>
+                    <a href="{{ route('password.request') }}" class="small text-decoration-none text-primary fw-semibold">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2.5 fs-6 fw-semibold rounded-pill">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Dashboard
+                </button>
             </form>
 
             <div class="text-center text-muted small mt-4 pt-3 border-top">

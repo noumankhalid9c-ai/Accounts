@@ -41,12 +41,16 @@
                 
                 <div class="d-flex align-items-center gap-3">
                     <div class="user-pill">
-                        <div class="user-avatar">
-                            {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
-                        </div>
+                        @if(Auth::user() && Auth::user()->profile_picture)
+                            <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                        @else
+                            <div class="user-avatar">
+                                {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                            </div>
+                        @endif
                         <div class="d-none d-md-block text-start lh-sm me-1">
                             <div class="fw-bold text-dark small mb-0">{{ Auth::user()->name ?? 'User' }}</div>
-                            <div class="text-muted" style="font-size: 0.72rem;">{{ Auth::user()->role ?? 'Admin' }}</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">{{ Auth::user()->role_name ?? 'User' }}</div>
                         </div>
                     </div>
                     

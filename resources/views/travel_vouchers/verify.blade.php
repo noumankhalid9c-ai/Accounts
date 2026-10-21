@@ -43,10 +43,21 @@
                     <span class="fw-medium">{{ $voucher->group_head ?? $voucher->travelGroup->group_leader ?? 'N/A' }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <span class="text-muted">Flight No(s)</span>
+                    <span class="fw-bold text-success">{{ $voucher->flight_numbers_summary }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
                     <span class="text-muted">Total Passengers</span>
                     <span class="fw-bold text-primary">{{ $voucher->pax }}</span>
                 </li>
+                @if($voucher->comments)
+                <li class="list-group-item py-3">
+                    <span class="text-muted small d-block">Comments:</span>
+                    <span class="small fw-medium">{{ $voucher->comments }}</span>
+                </li>
+                @endif
             </ul>
+
         </div>
         <div class="card-footer bg-light text-center py-3 text-muted small border-0">
             Verified by Madina Shareef Travels System &bull; {{ date('Y') }}

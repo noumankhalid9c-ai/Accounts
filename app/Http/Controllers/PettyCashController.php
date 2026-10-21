@@ -8,6 +8,14 @@ use Carbon\Carbon;
 
 class PettyCashController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:petty_cash.view')->only(['dashboard', 'daily', 'reports', 'export', 'printTransaction']);
+        $this->middleware('permission:petty_cash.create')->only(['storeTransaction']);
+        $this->middleware('permission:petty_cash.approve')->only(['closeDay']);
+    }
+
     public function dashboard()
     {
         $today = Carbon::today();
@@ -105,7 +113,7 @@ class PettyCashController extends Controller
 
     public function closeDay(Request $request, PettyCashDay $day)
     {
-        if (auth()->user()->role_id != 1 && auth()->user()->role_id != 2) {
+        if (!auth()->user()->isSuperAdmin() && !auth()->user()->canDo('petty_cash.approve') && auth()->user()->role_id != 1 && auth()->user()->role_id != 2) {
             abort(403, 'Unauthorized to close day.');
         }
         

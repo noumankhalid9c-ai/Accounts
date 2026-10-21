@@ -196,7 +196,7 @@
                                 <a href="{{ route('monthly_expenses.edit', $exp->id) }}" class="btn btn-light border" title="Edit">
                                     <i class="bi bi-pencil text-secondary"></i>
                                 </a>
-                                @if(auth()->user() && auth()->user()->role_id == 1)
+                                @if(auth()->user() && (auth()->user()->isSuperAdmin() || auth()->user()->canDo('monthly_expenses.delete')))
                                     <form action="{{ route('monthly_expenses.destroy', $exp->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Move this expense to trash?');">
                                         @csrf
                                         @method('DELETE')

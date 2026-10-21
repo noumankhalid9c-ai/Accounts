@@ -165,7 +165,7 @@
                     <span class="fw-bold text-primary">Rs {{ number_format($ticket->total_amount, 2) }}</span>
                 </div>
                 
-                @if(Auth::user()->role === 'Admin' || Auth::user()->role === 'Manager')
+                @if(Auth::user()->canDo('airline_tickets.financial'))
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Estimated Profit</span>
                     <span class="fw-bold text-success">Rs {{ number_format($ticket->estimated_profit, 2) }}</span>

@@ -10,6 +10,14 @@ use App\Models\User;
 
 class CrmController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:crm.view')->only(['dashboard', 'pipeline', 'leads', 'showLead']);
+        $this->middleware('permission:crm.create')->only(['storeLead', 'storeFollowup', 'updateLeadStage']);
+        $this->middleware('permission:crm.delete')->only(['destroyLead']);
+    }
+
     public function dashboard()
     {
         $totalCustomers = Customer::count();

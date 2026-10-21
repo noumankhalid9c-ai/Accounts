@@ -6,8 +6,12 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect(auth()->user()->getLandingUrl());
+    }
     return redirect()->route('login');
 });
+
 
 // Public Voucher Verification
 Route::get('/voucher/verify/{token}', [\App\Http\Controllers\TravelVoucherController::class, 'verify'])->name('travel-vouchers.verify');
@@ -20,14 +24,53 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::get('/captcha/refresh', [AuthController::class, 'generateCaptchaApi'])->name('captcha.refresh');
+
+    // Forgot Password & Reset Flow
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Placeholder routes for navigation links
-    Route::get('/profile', function() { return 'Profile'; })->name('profile');
+
+    // Force Password Change Route
+    Route::get('/force-change-password', [AuthController::class, 'showForceChangePassword'])->name('password.force_change');
+    Route::post('/force-change-password', [AuthController::class, 'forceChangePassword'])->name('password.force_change.post');
+
+    // User Profile Routes
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/change-password', [\App\Http\Controllers\ProfileController::class, 'changePassword'])->name('profile.password');
+    Route::post('/profile/revoke-sessions', [\App\Http\Controllers\ProfileController::class, 'revokeOtherSessions'])->name('profile.revoke_sessions');
+
+    // ==========================================
+    // Advanced User Management & RBAC Subsystem
+    // ==========================================
+    Route::post('/users/bulk-action', [\App\Http\Controllers\UserController::class, 'bulkAction'])->name('users.bulk_action');
+    Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::post('/users/{user}/reset-password', [\App\Http\Controllers\UserController::class, 'resetPassword'])->name('users.reset_password');
+    Route::post('/users/{user}/toggle-status', [\App\Http\Controllers\UserController::class, 'toggleStatus'])->name('users.toggle_status');
+    Route::post('/users/{user}/revoke-sessions', [\App\Http\Controllers\UserController::class, 'revokeSessions'])->name('users.revoke_sessions');
+    Route::get('/users/{user}/permissions', [\App\Http\Controllers\UserController::class, 'permissions'])->name('users.permissions');
+    Route::post('/users/{user}/permissions', [\App\Http\Controllers\UserController::class, 'updatePermissions'])->name('users.permissions.update');
+
+    // Roles & Permissions
+    Route::resource('roles', \App\Http\Controllers\RoleController::class);
+    Route::get('/roles/{role}/permissions', [\App\Http\Controllers\RoleController::class, 'permissions'])->name('roles.permissions');
+    Route::post('/roles/{role}/permissions', [\App\Http\Controllers\RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
+
+    // User Activity Logs
+    Route::get('/activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+    // Login History
+    Route::get('/login-history', [\App\Http\Controllers\LoginHistoryController::class, 'index'])->name('login-history.index');
+
+    // Security Settings
+    Route::get('/security-settings', [\App\Http\Controllers\SecuritySettingController::class, 'index'])->name('security-settings.index');
+    Route::post('/security-settings', [\App\Http\Controllers\SecuritySettingController::class, 'update'])->name('security-settings.update');
     // Client Management
     Route::resource('clients', ClientController::class);
 
@@ -68,16 +111,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/travel-groups/{travel_group}/vouchers/create', [\App\Http\Controllers\TravelVoucherController::class, 'create'])->name('travel-vouchers.create');
     Route::post('/travel-groups/{travel_group}/vouchers', [\App\Http\Controllers\TravelVoucherController::class, 'store'])->name('travel-vouchers.store');
     Route::get('/travel-vouchers/{travel_voucher}', [\App\Http\Controllers\TravelVoucherController::class, 'show'])->name('travel-vouchers.show');
+    Route::get('/travel-vouchers/{travel_voucher}/edit', [\App\Http\Controllers\TravelVoucherController::class, 'edit'])->name('travel-vouchers.edit');
+    Route::put('/travel-vouchers/{travel_voucher}', [\App\Http\Controllers\TravelVoucherController::class, 'update'])->name('travel-vouchers.update');
     Route::get('/travel-vouchers/{travel_voucher}/print', [\App\Http\Controllers\TravelVoucherController::class, 'print'])->name('travel-vouchers.print');
 
-    Route::get('/users', function() { return 'Users'; })->name('users.index');
-    Route::get('/settings', function() { return 'Settings'; })->name('settings.index');
+    Route::get('/settings', [\App\Http\Controllers\SecuritySettingController::class, 'index'])->name('settings.index');
     
     // Airline Tickets Module
     Route::get('/airline-tickets/dashboard', [\App\Http\Controllers\AirlineTicketController::class, 'dashboard'])->name('airline-tickets.dashboard');
     Route::get('/airline-tickets/today', [\App\Http\Controllers\AirlineTicketController::class, 'todayFlights'])->name('airline-tickets.today');
     Route::get('/airline-tickets/upcoming', [\App\Http\Controllers\AirlineTicketController::class, 'upcomingFlights'])->name('airline-tickets.upcoming');
-    Route::resource('airline-tickets', \App\Http\Controllers\AirlineTicketController::class);
+    Route::resource('airline-tickets', \App\Http\Controllers\AirlineTicketController::class)->parameters(['airline-tickets' => 'ticket']);
     Route::get('/airline-tickets/{ticket}/invoice', [\App\Http\Controllers\AirlineTicketController::class, 'invoice'])->name('airline-tickets.invoice');
     Route::get('/airline-tickets/{ticket}/invoice/pdf', [\App\Http\Controllers\AirlineTicketController::class, 'invoicePdf'])->name('airline-tickets.invoice.pdf');
     Route::get('/airline-tickets/{ticket}/print', [\App\Http\Controllers\AirlineTicketController::class, 'printTicket'])->name('airline-tickets.print');

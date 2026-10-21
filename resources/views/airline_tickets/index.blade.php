@@ -72,7 +72,7 @@
                                 <a href="{{ route('airline-tickets.edit', $ticket->id) }}" class="btn btn-sm btn-light border text-secondary" data-bs-toggle="tooltip" title="Edit Ticket">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                @if(Auth::user()->role !== 'Sales')
+                                @if(Auth::user()->canDo('airline_tickets.delete'))
                                 <form action="{{ route('airline-tickets.destroy', $ticket->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
