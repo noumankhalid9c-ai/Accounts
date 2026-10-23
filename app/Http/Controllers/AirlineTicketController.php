@@ -100,6 +100,8 @@ class AirlineTicketController extends Controller
 
     public function store(Request $request)
     {
+        $ticketDate = $request->ticket_date ?? $request->issue_date ?? now()->format('Y-m-d');
+
         // Add ticket
         $ticket = AirlineTicket::create([
             'ticket_number' => $request->ticket_number ?? 'TK-' . strtoupper(Str::random(6)),
@@ -107,7 +109,7 @@ class AirlineTicketController extends Controller
             'b2b_agent_id' => $request->b2b_agent_id,
             'pnr' => $request->pnr,
             'booking_reference' => $request->booking_reference,
-            'ticket_date' => $request->ticket_date,
+            'ticket_date' => $ticketDate,
             'ticket_type' => $request->ticket_type,
             'route_type' => $request->route_type,
             'base_fare' => $request->base_fare ?? 0,
@@ -116,9 +118,9 @@ class AirlineTicketController extends Controller
             'service_charges' => $request->service_charges ?? 0,
             'discount' => $request->discount ?? 0,
             'other_charges' => $request->other_charges ?? 0,
-            'total_fare' => 0, // Calculated below
-            'amount_paid' => $request->amount_paid ?? 0,
-            'amount_pending' => 0,
+            'total_fare' => $request->total_fare ?? 0,
+            'amount_paid' => 0,
+            'amount_pending' => $request->total_fare ?? 0,
             'payment_status' => 'Pending',
             'ticket_status' => $request->ticket_status ?? 'Reserved',
             'notes' => $request->notes,
@@ -126,37 +128,42 @@ class AirlineTicketController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        $this->updateFinancials($ticket);
-
         // Add segments
         if ($request->has('segments')) {
             foreach ($request->segments as $index => $segment) {
-                TicketFlightSegment::create(array_merge($segment, [
-                    'ticket_id' => $ticket->id,
-                    'segment_order' => $index,
-                ]));
+                if (!empty($segment['airline_id']) || !empty($segment['flight_number'])) {
+                    TicketFlightSegment::create(array_merge($segment, [
+                        'ticket_id' => $ticket->id,
+                        'segment_order' => $index,
+                    ]));
+                }
             }
         }
 
         // Add passengers
         if ($request->has('passengers')) {
             foreach ($request->passengers as $passenger) {
-                TicketPassenger::create(array_merge($passenger, [
-                    'ticket_id' => $ticket->id,
-                ]));
+                if (!empty($passenger['passenger_name'])) {
+                    TicketPassenger::create(array_merge($passenger, [
+                        'ticket_id' => $ticket->id,
+                    ]));
+                }
             }
         }
 
         // Initial Payment
-        if ($request->filled('amount_paid') && $request->amount_paid > 0) {
+        if ($request->filled('amount_paid') && (float)$request->amount_paid > 0) {
             TicketPayment::create([
                 'ticket_id' => $ticket->id,
-                'payment_date' => now()->format('Y-m-d'),
-                'amount' => $request->amount_paid,
+                'payment_date' => $ticketDate,
+                'amount' => (float)$request->amount_paid,
                 'payment_method' => $request->payment_method ?? 'Cash',
                 'received_by' => auth()->user()->name ?? 'Admin',
             ]);
         }
+
+        // Recalculate and synchronize financials after initial payment
+        $this->updateFinancials($ticket);
 
         // Generate Invoice
         TicketInvoice::create([
@@ -167,6 +174,7 @@ class AirlineTicketController extends Controller
 
         return redirect()->route('airline-tickets.show', $ticket->id)->with('success', 'Ticket created successfully.');
     }
+
 
     public function edit(AirlineTicket $ticket)
     {
@@ -277,9 +285,10 @@ class AirlineTicketController extends Controller
 
     private function updateFinancials(AirlineTicket $ticket)
     {
-        $totalFare = $ticket->base_fare + $ticket->taxes + $ticket->airline_charges + $ticket->service_charges + $ticket->other_charges - $ticket->discount;
-        $totalPaid = $ticket->payments()->sum('amount');
-        $amountPending = $totalFare - $totalPaid;
+        $calculatedFare = (float)$ticket->base_fare + (float)$ticket->taxes + (float)$ticket->airline_charges + (float)$ticket->service_charges + (float)$ticket->other_charges - (float)$ticket->discount;
+        $totalFare = (float)$ticket->total_fare > 0 ? (float)$ticket->total_fare : $calculatedFare;
+        $totalPaid = (float)$ticket->payments()->sum('amount');
+        $amountPending = max(0, $totalFare - $totalPaid);
         
         $status = 'Pending';
         if ($totalPaid > 0 && $totalPaid < $totalFare) {
@@ -295,4 +304,5 @@ class AirlineTicketController extends Controller
             'payment_status' => $status,
         ]);
     }
+
 }

@@ -20,6 +20,12 @@ class Booking extends Model
         return $this->belongsTo(B2bAgent::class, 'b2b_agent_id');
     }
 
+    public function b2bAgent()
+    {
+        return $this->agent();
+    }
+
+
     public function salesExecutive()
     {
         return $this->belongsTo(Employee::class, 'assigned_sales_executive_id');

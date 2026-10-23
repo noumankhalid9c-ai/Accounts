@@ -53,8 +53,9 @@
                         
                         <div class="col-md-4">
                             <label class="form-label">Issue Date *</label>
-                            <input type="date" name="issue_date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            <input type="date" name="ticket_date" class="form-control" value="{{ old('ticket_date', date('Y-m-d')) }}" required>
                         </div>
+
                         
                         <div class="col-md-4">
                             <label class="form-label">Ticket Status *</label>

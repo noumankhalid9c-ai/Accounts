@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commission Slip - {{ $payment->payment_slip_number }}</title>
+    <title>Commission Slip - {{ $payment->payment_slip_number ?? 'B2B-PAY' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('MADINA-LOGO-3.png') }}">
     <!-- Bootstrap CSS for styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -21,8 +22,10 @@
             border-top: 5px solid #198754; /* Success green for payment */
         }
         .company-logo {
-            max-height: 80px;
+            max-height: 75px;
+            width: auto;
             object-fit: contain;
+            display: inline-block;
         }
         .company-title {
             font-size: 24px;
@@ -109,6 +112,10 @@
             .no-print {
                 display: none !important;
             }
+            .company-logo {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -130,7 +137,9 @@
     <div class="slip-container">
         <!-- Header -->
         <div class="slip-header">
-            <!-- You can dynamically replace the src with asset('logo.png') if you have one -->
+            <div class="mb-2">
+                <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Madina Shareef Travels" class="company-logo">
+            </div>
             <h1 class="company-title">MADINA SHAREEF TRAVELS</h1>
             <p class="company-address">211A- GT Road Opposite Brains Baghbanpura, Lahore</p>
             <p class="company-address">Email: info@madinashareeftravels.pk</p>
@@ -138,19 +147,21 @@
             <div class="slip-title">COMMISSION PAYMENT SLIP</div>
         </div>
 
+
         <div class="row info-box">
             <div class="col-sm-6 mb-3 mb-sm-0">
                 <p class="info-label">Payment To (Agent)</p>
-                <p class="info-value">{{ $payment->b2bAgent->company_name ?? $payment->b2bAgent->name }}</p>
-                <p class="text-muted small mb-0">{{ $payment->b2bAgent->contact_person }} | {{ $payment->b2bAgent->contact }}</p>
+                <p class="info-value">{{ $payment->b2bAgent?->company_name ?? $payment->b2bAgent?->name ?? 'N/A' }}</p>
+                <p class="text-muted small mb-0">{{ $payment->b2bAgent?->contact_person ?? '-' }} | {{ $payment->b2bAgent?->contact ?? '-' }}</p>
             </div>
             <div class="col-sm-6 text-sm-end">
                 <p class="info-label">Slip Number</p>
-                <p class="info-value text-primary">{{ $payment->payment_slip_number }}</p>
+                <p class="info-value text-primary">{{ $payment->payment_slip_number ?? ('B2B-PAY-' . str_pad($payment->id, 5, '0', STR_PAD_LEFT)) }}</p>
                 <p class="info-label mt-2">Payment Date</p>
-                <p class="info-value">{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</p>
+                <p class="info-value">{{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') : now()->format('d M Y') }}</p>
             </div>
         </div>
+
 
         <!-- Payment Details Table -->
         <table class="table table-bordered mb-4">

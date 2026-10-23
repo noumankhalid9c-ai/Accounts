@@ -11,13 +11,19 @@ class AgentCommissionPayment extends Model
 
     protected $guarded = [];
 
-    public function agent()
+    public function b2bAgent()
     {
         return $this->belongsTo(B2bAgent::class, 'b2b_agent_id');
+    }
+
+    public function agent()
+    {
+        return $this->b2bAgent();
     }
 
     public function booking()
     {
         return $this->belongsTo(Booking::class, 'booking_id');
     }
+
 }
