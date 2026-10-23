@@ -17,8 +17,12 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
+        if (!session()->has('captcha_code') || !session()->has('captcha_num1') || !session()->has('captcha_num2')) {
+            $this->generateCaptcha();
+        }
         return view('auth.login');
     }
+
 
     public function login(Request $request)
     {

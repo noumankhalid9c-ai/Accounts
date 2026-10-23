@@ -78,6 +78,13 @@
                 </div>
 
                 <!-- Security Verification CAPTCHA -->
+                @php
+                    if (!session()->has('captcha_code') || !session()->has('captcha_num1') || !session()->has('captcha_num2')) {
+                        $n1 = rand(2, 9);
+                        $n2 = rand(1, 9);
+                        session(['captcha_num1' => $n1, 'captcha_num2' => $n2, 'captcha_code' => $n1 + $n2]);
+                    }
+                @endphp
                 <div class="mb-4">
                     <div class="d-flex align-items-center justify-content-between mb-1">
                         <label for="captcha-input" class="form-label mb-0 small fw-semibold text-dark">
@@ -89,12 +96,13 @@
                     </div>
                     <div class="input-group">
                         <span class="input-group-text bg-light text-dark fw-bold border-end-0 user-select-none" id="captcha-question" style="font-size: 1.05rem; letter-spacing: 1px; min-width: 95px; justify-content: center;">
-                            {{ session('captcha_num1', rand(2, 9)) }} + {{ session('captcha_num2', rand(1, 9)) }} = ?
+                            {{ session('captcha_num1') }} + {{ session('captcha_num2') }} = ?
                         </span>
                         <input type="number" name="captcha" id="captcha-input" class="form-control border-start-0" placeholder="Answer" required autocomplete="off">
                     </div>
                     <div class="form-text small text-muted">Solve this simple math challenge to protect against bot attacks.</div>
                 </div>
+
 
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <div class="form-check mb-0">
