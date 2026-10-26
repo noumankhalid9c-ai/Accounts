@@ -158,9 +158,10 @@ class ComprehensiveQATest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('clients.create'));
         $response->assertStatus(200);
 
-        // Store with validation
+        // Store with validation (Direct reference without vendor_name)
         $clientData = [
             'name' => 'QA Client Test ' . Str::random(4),
+            'company_name' => 'QA Client Test Co',
             'contact_person' => 'QA Contact Person',
             'phone' => '03211234567',
             'email' => 'client_' . Str::random(4) . '@example.com',
@@ -168,18 +169,58 @@ class ComprehensiveQATest extends TestCase
             'address' => 'Gulberg III, Lahore',
             'status' => 'Active',
             'reference_type' => 'Direct',
+            'vendor_name' => null,
         ];
         $response = $this->actingAs($this->admin)->post(route('clients.store'), $clientData);
         $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
 
         $client = Client::where('name', $clientData['name'])->first();
         $this->assertNotNull($client);
+        $this->assertNull($client->vendor_name);
+
+        // Validation test: Vendor reference requires vendor_name
+        $invalidVendorClientData = [
+            'name' => 'Vendor Client Without Name ' . Str::random(4),
+            'contact_person' => 'Vendor Test',
+            'email' => 'vendor_test_' . Str::random(4) . '@example.com',
+            'status' => 'Active',
+            'reference_type' => 'Vendor',
+            'vendor_name' => null,
+        ];
+        $response = $this->actingAs($this->admin)->post(route('clients.store'), $invalidVendorClientData);
+        $response->assertSessionHasErrors('vendor_name');
+
+        // Successful Vendor reference client creation
+        $validVendorClientData = array_merge($invalidVendorClientData, [
+            'vendor_name' => 'Travel Partners LLC'
+        ]);
+        $response = $this->actingAs($this->admin)->post(route('clients.store'), $validVendorClientData);
+        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+
+        $vendorClient = Client::where('name', $validVendorClientData['name'])->first();
+        $this->assertNotNull($vendorClient);
+        $this->assertEquals('Travel Partners LLC', $vendorClient->vendor_name);
 
         // Edit View
         $response = $this->actingAs($this->admin)->get(route('clients.edit', $client->id));
         $response->assertStatus(200);
 
-        // Update
+        // Update from Vendor to Direct should clear vendor_name
+        $response = $this->actingAs($this->admin)->put(route('clients.update', $vendorClient->id), [
+            'name' => $vendorClient->name,
+            'company_name' => $vendorClient->company_name,
+            'contact_person' => $vendorClient->contact_person,
+            'email' => $vendorClient->email,
+            'status' => 'Active',
+            'reference_type' => 'Direct',
+            'vendor_name' => 'Stale Vendor',
+        ]);
+        $response->assertStatus(302);
+        $this->assertNull($vendorClient->fresh()->vendor_name);
+
+        // Update Direct client
         $response = $this->actingAs($this->admin)->put(route('clients.update', $client->id), array_merge($clientData, [
             'address' => 'Blue Area, Islamabad'
         ]));

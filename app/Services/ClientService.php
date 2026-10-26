@@ -31,6 +31,9 @@ class ClientService
         if (empty($data['name'])) {
             $data['name'] = !empty($data['contact_person']) ? $data['contact_person'] : $data['company_name'];
         }
+        if (isset($data['reference_type']) && $data['reference_type'] === 'Direct') {
+            $data['vendor_name'] = null;
+        }
         return $this->clientRepository->create($data);
     }
 
@@ -38,6 +41,9 @@ class ClientService
     {
         if (isset($data['company_name']) && empty($data['company_name'])) {
             $data['company_name'] = !empty($data['name']) ? $data['name'] : (!empty($data['contact_person']) ? $data['contact_person'] : 'Individual');
+        }
+        if (isset($data['reference_type']) && $data['reference_type'] === 'Direct') {
+            $data['vendor_name'] = null;
         }
         return $this->clientRepository->update($id, $data);
     }

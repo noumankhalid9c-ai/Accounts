@@ -22,7 +22,7 @@ class ClientRequest extends FormRequest
             'mobile' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'reference_type' => 'nullable|string|in:Direct,Vendor',
-            'vendor_name' => 'required_if:reference_type,Vendor|string|max:255',
+            'vendor_name' => 'nullable|required_if:reference_type,Vendor|string|max:255',
             'address' => 'nullable|string',
             'status' => 'required|in:Active,Prospect,Inactive,Suspended',
             'notes' => 'nullable|string',
