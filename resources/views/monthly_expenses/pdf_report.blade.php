@@ -96,7 +96,7 @@
     <table class="header-table">
         <tr>
             <td style="vertical-align: top;">
-                <div class="company-title">Madina Shareef Travels</div>
+                <div class="company-title">Madina Shareef Travels & Tours</div>
                 <div style="color: #64748b; font-size: 10px; margin-top: 3px;">
                     Monthly Operating Expenses & Utility Bills Audit
                 </div>

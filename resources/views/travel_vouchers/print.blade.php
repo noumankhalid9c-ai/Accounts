@@ -126,7 +126,7 @@
                 <img src="{{ asset('MADINA-LOGO-3.png') }}" style="height: 60px; max-width: 100%; object-fit: contain;" alt="Logo">
             </td>
             <td style="width: 70%; vertical-align: top; padding-left: 10px;">
-                <div class="header-title">MADINA SHAREEF TRAVELS</div>
+                <div class="header-title">MADINA SHAREEF TRAVELS & TOURS</div>
                 
                 <div style="display: flex; flex-wrap: wrap;">
                     <div style="width: 50%;">

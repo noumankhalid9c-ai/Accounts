@@ -162,7 +162,7 @@
 
     <div class="header">
         <div>
-            <div class="company-name">{{ config('app.name', 'Madina Shareef Travels') }}</div>
+            <div class="company-name">{{ config('app.name', 'Madina Shareef Travels & Tours') }}</div>
             <div class="company-subtitle">Office Monthly Expenses & Utility Bills Statement</div>
         </div>
         <div class="report-title">
@@ -248,7 +248,7 @@
     </table>
 
     <div class="footer-note">
-        <div>Madina Shareef Travels &bull; Confidential Financial Statement</div>
+        <div>Madina Shareef Travels & Tours &bull; Confidential Financial Statement</div>
         <div>Page 1 of 1</div>
     </div>
 

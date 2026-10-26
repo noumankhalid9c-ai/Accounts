@@ -19,7 +19,7 @@ $html = <<<HTML
 <html>
 <head>
 <meta charset="utf-8">
-<title>Madina Shareef Travels - Complete System Manual & Feature Guide</title>
+<title>Madina Shareef Travels & Tours - Complete System Manual & Feature Guide</title>
 <style>
     @page {
         margin: 50px 35px 45px 35px;

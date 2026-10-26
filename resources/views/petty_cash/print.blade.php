@@ -35,7 +35,7 @@
 
     <div class="print-container">
         <div class="receipt-header text-center">
-            <h2 class="fw-bold mb-1">Madina Shareef Travels</h2>
+            <h2 class="fw-bold mb-1">Madina Shareef Travels & Tours</h2>
             <h4 class="text-uppercase text-secondary mb-0">
                 {{ $transaction->transaction_type == 'Expense' ? 'Expense Payment Slip' : 'Cash Receipt Slip' }}
             </h4>

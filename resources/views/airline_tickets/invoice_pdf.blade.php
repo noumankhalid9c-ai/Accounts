@@ -116,7 +116,7 @@
                         <img src="{{ public_path('MADINA-LOGO-3.png') }}" style="max-height: 60px; float: left; margin-right: 15px;" alt="Logo">
                     @endif
                     <div style="float: left;">
-                        <div class="company-name">Madina Shareef Travels</div>
+                        <div class="company-name">Madina Shareef Travels & Tours</div>
                         <div class="company-details">
                             211A- GT Road Opposite Brains Baghbanpura, Lahore<br>
                             Phone: +92 300 1234567 | Email: info@madinashareeftravels.pk
@@ -243,7 +243,7 @@
 
     <div class="footer">
         This is a computer generated invoice/e-ticket and does not require a physical signature.<br>
-        Thank you for choosing Madina Shareef Travels!
+        Thank you for choosing Madina Shareef Travels & Tours!
     </div>
 
 </body>

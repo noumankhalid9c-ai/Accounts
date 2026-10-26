@@ -27,7 +27,7 @@ class QAFullSystemTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get('/dashboard');
         $response->assertStatus(200);
-        $response->assertSee('Madina Shareef Travels');
+        $response->assertSee('Madina Shareef Travels & Tours');
     }
 
     public function test_user_management_module_pages()

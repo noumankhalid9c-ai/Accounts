@@ -17,7 +17,7 @@
             <div class="d-flex align-items-center gap-3">
                 <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Logo" style="height: 60px;">
                 <div>
-                    <h4 class="fw-bold mb-0 text-dark">Madina Shareef Travels</h4>
+                    <h4 class="fw-bold mb-0 text-dark">Madina Shareef Travels & Tours</h4>
                     <div class="text-muted small">211A- GT Road Opposite Brains Baghbanpura, Lahore</div>
                     <div class="text-muted small">Phone: +92 300 1234567 | info@madinashareeftravels.pk</div>
                 </div>
@@ -82,7 +82,7 @@
         </div>
 
         <div class="text-center text-muted small mt-5 pt-3 border-top">
-            <p class="mb-1">Thank you for traveling with Madina Shareef Travels!</p>
+            <p class="mb-1">Thank you for traveling with Madina Shareef Travels & Tours!</p>
             <p>If you have any questions concerning this invoice, please contact support.</p>
         </div>
         

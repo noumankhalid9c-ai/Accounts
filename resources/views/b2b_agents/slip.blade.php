@@ -138,9 +138,9 @@
         <!-- Header -->
         <div class="slip-header">
             <div class="mb-2">
-                <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Madina Shareef Travels" class="company-logo">
+                <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Madina Shareef Travels & Tours" class="company-logo">
             </div>
-            <h1 class="company-title">MADINA SHAREEF TRAVELS</h1>
+            <h1 class="company-title">MADINA SHAREEF TRAVELS & TOURS</h1>
             <p class="company-address">211A- GT Road Opposite Brains Baghbanpura, Lahore</p>
             <p class="company-address">Email: info@madinashareeftravels.pk</p>
             

@@ -249,7 +249,7 @@
             <div class="logo-box">
                 <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Logo">
                 <div>
-                    <div class="company-name">{{ config('app.name', 'Madina Shareef Travels') }}</div>
+                    <div class="company-name">{{ config('app.name', 'Madina Shareef Travels & Tours') }}</div>
                     <div class="company-info">
                         211A- GT Road Opposite Brains Baghbanpura, Lahore<br>
                         Phone: +92 300 1234567 &bull; Email: info@madinashareeftravels.pk
@@ -383,7 +383,7 @@
         </div>
 
         <div class="footer-note">
-            Thank you for choosing {{ config('app.name', 'Madina Shareef Travels') }} &bull; For inquiries, contact info@madinashareeftravels.pk
+            Thank you for choosing {{ config('app.name', 'Madina Shareef Travels & Tours') }} &bull; For inquiries, contact info@madinashareeftravels.pk
         </div>
     </div>
 

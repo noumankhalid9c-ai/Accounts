@@ -57,7 +57,7 @@
         <div class="d-flex align-items-center">
             <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Company Logo" class="me-3" style="max-height: 60px; object-fit: contain;">
             <div>
-                <h2 class="fw-bold mb-0" style="color: #2b2c68;">Madina Shareef Travels</h2>
+                <h2 class="fw-bold mb-0" style="color: #2b2c68;">Madina Shareef Travels & Tours</h2>
                 <div class="text-muted small">Electronic Ticket / Itinerary Receipt</div>
             </div>
         </div>
@@ -70,7 +70,7 @@
     <div class="row mb-4">
         <div class="col-6">
             <h6 class="text-uppercase text-muted fw-bold mb-2">Agency Info</h6>
-            <div><strong>Madina Shareef Travels</strong></div>
+            <div><strong>Madina Shareef Travels & Tours</strong></div>
             <div>Phone: +92 300 1234567</div>
             <div>Email: info@madinashareeftravels.pk</div>
         </div>

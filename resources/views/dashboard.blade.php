@@ -131,11 +131,11 @@
                     <i class="bi bi-calendar3"></i> {{ \Carbon\Carbon::now()->format('l, F j, Y') }}
                 </div>
                 <div class="hero-date-badge mb-0" style="background: rgba(255, 255, 255, 0.2); font-weight: 700;">
-                    <i class="bi bi-building"></i> Madina Shareef Travels
+                    <i class="bi bi-building"></i> Madina Shareef Travels & Tours
                 </div>
             </div>
             <h2 class="fw-bold mb-2">Good afternoon, {{ Auth::user()->name ?? 'Nouman Khalid' }}! 👋</h2>
-            <p class="text-white-50 mb-0">Welcome to Madina Shareef Travels &bull; Financial & Operations Management Suite.</p>
+            <p class="text-white-50 mb-0">Welcome to Madina Shareef Travels & Tours &bull; Financial & Operations Management Suite.</p>
         </div>
         <div class="d-flex gap-2 mt-4 mt-md-0 flex-wrap">
             <a href="{{ route('clients.create') }}" class="btn hero-btn text-decoration-none"><i class="bi bi-person-plus me-2"></i>Add Client</a>

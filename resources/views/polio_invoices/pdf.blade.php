@@ -199,7 +199,7 @@
                             @endif
                         </td>
                         <td style="vertical-align: middle; padding-left: 10px;">
-                            <div class="company-name">{{ config('app.name', 'Madina Shareef Travels') }}</div>
+                            <div class="company-name">{{ config('app.name', 'Madina Shareef Travels & Tours') }}</div>
                             <div class="company-info">
                                 211A- GT Road Opposite Brains Baghbanpura, Lahore<br>
                                 Phone: +92 300 1234567 &bull; Email: info@madinashareeftravels.pk
@@ -344,7 +344,7 @@
     </table>
 
     <div class="footer-note">
-        Thank you for choosing {{ config('app.name', 'Madina Shareef Travels') }} &bull; Confidential Invoice
+        Thank you for choosing {{ config('app.name', 'Madina Shareef Travels & Tours') }} &bull; Confidential Invoice
     </div>
 
 </body>

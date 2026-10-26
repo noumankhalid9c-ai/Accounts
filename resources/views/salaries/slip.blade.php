@@ -41,9 +41,9 @@
     <div class="slip-container">
         <div class="header">
             <div style="display: flex; align-items: center; gap: 20px;">
-                <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Madina Shareef Travels Logo" style="height: 65px; width: auto;">
+                <img src="{{ asset('MADINA-LOGO-3.png') }}" alt="Madina Shareef Travels & Tours Logo" style="height: 65px; width: auto;">
                 <div class="company-info">
-                    <h1>Madina Shareef Travels</h1>
+                    <h1>Madina Shareef Travels & Tours</h1>
                     <p>211A- GT Road Opposite Brains Baghbanpura, Lahore</p>
                     <p>Email: info@madinashareeftravels.pk</p>
                 </div>

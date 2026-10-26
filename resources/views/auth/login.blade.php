@@ -41,8 +41,8 @@
                 <div class="mb-3">
                     <img src="{{ asset('MADINA-LOGO-3.png') }}" onerror="this.onerror=null; this.src='https://placehold.co/200x52?text=Logo';" alt="{{ config('app.name') }} Logo" style="height: 52px; max-width: 200px; object-fit: contain;">
                 </div>
-                <h4 class="fw-bold text-dark mb-1">Madina Shareef Travels</h4>
-                <p class="text-muted small">Sign in to Madina Shareef Travels Management Portal</p>
+                <h4 class="fw-bold text-dark mb-1">Madina Shareef Travels & Tours</h4>
+                <p class="text-muted small">Sign in to Madina Shareef Travels & Tours Management Portal</p>
             </div>
 
             @if ($errors->any())
