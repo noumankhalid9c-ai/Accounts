@@ -137,12 +137,17 @@
                             <div class="kanban-card-subtitle">
                                 <i class="bi bi-tag-fill me-1"></i>{{ $lead->inquiry_type }} &middot; {{ $lead->destination }}
                             </div>
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div class="kanban-card-price">
                                     PKR {{ number_format((float)$lead->budget, 0) }}
                                 </div>
-                                <div class="kanban-card-assigned">
-                                    <i class="bi bi-person-fill"></i> {{ explode(' ', $lead->assignedTo->name ?? 'None')[0] }}
+                                <div class="d-flex align-items-center gap-1">
+                                    <div class="kanban-card-assigned">
+                                        <i class="bi bi-person-fill"></i> {{ explode(' ', $lead->assignedTo->name ?? 'None')[0] }}
+                                    </div>
+                                    <a href="{{ route('crm.leads.show', $lead->id) }}" class="badge bg-light text-primary border text-decoration-none" title="{{ $lead->comments->count() }} comments">
+                                        <i class="bi bi-chat-dots"></i> {{ $lead->comments->count() }}
+                                    </a>
                                 </div>
                             </div>
                             

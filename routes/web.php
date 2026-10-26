@@ -164,6 +164,8 @@ Route::middleware(['auth'])->prefix('crm')->name('crm.')->group(function () {
     Route::get('/leads/{lead}', [\App\Http\Controllers\CrmController::class, 'showLead'])->name('leads.show');
     Route::post('/leads/{lead}/stage', [\App\Http\Controllers\CrmController::class, 'updateLeadStage'])->name('leads.stage');
     Route::post('/leads/{lead}/followup', [\App\Http\Controllers\CrmController::class, 'storeFollowup'])->name('leads.followup');
+    Route::post('/leads/{lead}/comments', [\App\Http\Controllers\CrmController::class, 'storeComment'])->name('leads.comments.store');
+    Route::delete('/leads/{lead}/comments/{comment}', [\App\Http\Controllers\CrmController::class, 'destroyComment'])->name('leads.comments.destroy');
     Route::delete('/leads/{lead}', [\App\Http\Controllers\CrmController::class, 'destroyLead'])->name('leads.destroy');
 });
 // Petty Cash Routes
