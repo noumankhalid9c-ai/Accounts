@@ -25,11 +25,20 @@ class ClientService
 
     public function createClient(array $data)
     {
+        if (empty($data['company_name'])) {
+            $data['company_name'] = !empty($data['name']) ? $data['name'] : (!empty($data['contact_person']) ? $data['contact_person'] : 'Individual');
+        }
+        if (empty($data['name'])) {
+            $data['name'] = !empty($data['contact_person']) ? $data['contact_person'] : $data['company_name'];
+        }
         return $this->clientRepository->create($data);
     }
 
     public function updateClient($id, array $data)
     {
+        if (isset($data['company_name']) && empty($data['company_name'])) {
+            $data['company_name'] = !empty($data['name']) ? $data['name'] : (!empty($data['contact_person']) ? $data['contact_person'] : 'Individual');
+        }
         return $this->clientRepository->update($id, $data);
     }
 
