@@ -104,9 +104,20 @@ Route::middleware('auth')->group(function () {
     // Travel Groups & Vouchers
     Route::resource('travel-groups', \App\Http\Controllers\TravelGroupController::class);
     Route::post('/travel-groups/{travel_group}/clients', [\App\Http\Controllers\TravelGroupController::class, 'storeClient'])->name('travel-groups.clients.store');
+    Route::put('/travel-groups/{travel_group}/clients/{client}', [\App\Http\Controllers\TravelGroupController::class, 'updateClient'])->name('travel-groups.clients.update');
+    Route::delete('/travel-groups/{travel_group}/clients/{client}', [\App\Http\Controllers\TravelGroupController::class, 'destroyClient'])->name('travel-groups.clients.destroy');
+
     Route::post('/travel-groups/{travel_group}/flights', [\App\Http\Controllers\TravelGroupController::class, 'storeFlight'])->name('travel-groups.flights.store');
+    Route::put('/travel-groups/{travel_group}/flights/{flight}', [\App\Http\Controllers\TravelGroupController::class, 'updateFlight'])->name('travel-groups.flights.update');
+    Route::delete('/travel-groups/{travel_group}/flights/{flight}', [\App\Http\Controllers\TravelGroupController::class, 'destroyFlight'])->name('travel-groups.flights.destroy');
+
     Route::post('/travel-groups/{travel_group}/hotels', [\App\Http\Controllers\TravelGroupController::class, 'storeHotel'])->name('travel-groups.hotels.store');
+    Route::put('/travel-groups/{travel_group}/hotels/{hotel}', [\App\Http\Controllers\TravelGroupController::class, 'updateHotel'])->name('travel-groups.hotels.update');
+    Route::delete('/travel-groups/{travel_group}/hotels/{hotel}', [\App\Http\Controllers\TravelGroupController::class, 'destroyHotel'])->name('travel-groups.hotels.destroy');
+
     Route::post('/travel-groups/{travel_group}/transports', [\App\Http\Controllers\TravelGroupController::class, 'storeTransport'])->name('travel-groups.transports.store');
+    Route::put('/travel-groups/{travel_group}/transports/{transport}', [\App\Http\Controllers\TravelGroupController::class, 'updateTransport'])->name('travel-groups.transports.update');
+    Route::delete('/travel-groups/{travel_group}/transports/{transport}', [\App\Http\Controllers\TravelGroupController::class, 'destroyTransport'])->name('travel-groups.transports.destroy');
     
     Route::get('/travel-groups/{travel_group}/vouchers/create', [\App\Http\Controllers\TravelVoucherController::class, 'create'])->name('travel-vouchers.create');
     Route::post('/travel-groups/{travel_group}/vouchers', [\App\Http\Controllers\TravelVoucherController::class, 'store'])->name('travel-vouchers.store');
