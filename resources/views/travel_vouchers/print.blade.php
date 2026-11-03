@@ -145,7 +145,9 @@
                 </div>
             </td>
             <td style="width: 15%; text-align: right; vertical-align: top;">
+                @if(!empty($travelVoucher->qr_token))
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data={{ urlencode(route('travel-vouchers.verify', $travelVoucher->qr_token)) }}" class="qr-code" alt="QR">
+                @endif
             </td>
         </tr>
     </table>

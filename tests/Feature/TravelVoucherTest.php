@@ -96,6 +96,52 @@ class TravelVoucherTest extends TestCase
         $group->forceDelete();
     }
 
+    public function test_voucher_create_and_edit_pages_have_final_review_and_edit_options(): void
+    {
+        $superAdmin = User::where('role_id', 1)->first() ?? User::factory()->create(['role_id' => 1]);
+
+        $group = TravelGroup::create([
+            'group_id' => 'GRP-REV-' . rand(1000, 9999),
+            'group_name' => 'Review Test Group',
+            'service_type' => 'Umrah',
+            'status' => 'Active',
+            'departure_date' => '2026-11-01',
+            'return_date' => '2026-11-15',
+        ]);
+
+        // 1. Create page renders Final Review button & Review Modal with Edit option
+        $createResponse = $this->actingAs($superAdmin)->get(route('travel-vouchers.create', $group->id));
+        $createResponse->assertStatus(200);
+        $createResponse->assertSee('Final Review Before Issuing');
+        $createResponse->assertSee('Edit Details');
+        $createResponse->assertSee('Confirm & Generate Final Voucher', false);
+
+        $voucher = TravelVoucher::create([
+            'travel_group_id' => $group->id,
+            'voucher_number' => 'VOU-REV-' . rand(10000, 99999),
+            'voucher_type' => 'Umrah',
+            'voucher_date' => '2026-11-03',
+            'pax' => 3,
+            'qr_token' => \Illuminate\Support\Str::random(32),
+            'created_by' => $superAdmin->id,
+        ]);
+
+        // 2. Edit page renders Review Changes button & modal with Back to Editing option
+        $editResponse = $this->actingAs($superAdmin)->get(route('travel-vouchers.edit', $voucher->id));
+        $editResponse->assertStatus(200);
+        $editResponse->assertSee('Review Changes');
+        $editResponse->assertSee('Back to Editing');
+        $editResponse->assertSee('Confirm & Save Changes', false);
+
+        // 3. Group show page has distinct Edit button
+        $groupShowResponse = $this->actingAs($superAdmin)->get(route('travel-groups.show', $group->id));
+        $groupShowResponse->assertStatus(200);
+        $groupShowResponse->assertSee(route('travel-vouchers.edit', $voucher->id));
+
+        $voucher->forceDelete();
+        $group->forceDelete();
+    }
+
     public function test_admin_can_delete_travel_voucher(): void
     {
         $superAdmin = User::where('role_id', 1)->first() ?? User::factory()->create(['role_id' => 1]);

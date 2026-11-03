@@ -77,10 +77,12 @@
             </div>
             @endif
 
+            @if(!empty($travelVoucher->qr_token))
             <div class="bg-light p-3 rounded">
                 <strong>QR Verification URL:</strong><br>
                 <a href="{{ route('travel-vouchers.verify', $travelVoucher->qr_token) }}" target="_blank" class="small text-break">{{ route('travel-vouchers.verify', $travelVoucher->qr_token) }}</a>
             </div>
+            @endif
         </x-ui.card>
     </div>
 

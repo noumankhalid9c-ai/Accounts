@@ -15,6 +15,15 @@ class TravelVoucher extends Model
         'snapshot_data' => 'array',
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($voucher) {
+            if (empty($voucher->qr_token)) {
+                $voucher->qr_token = \Illuminate\Support\Str::random(32);
+            }
+        });
+    }
+
     public function travelGroup()
     {
         return $this->belongsTo(TravelGroup::class);
