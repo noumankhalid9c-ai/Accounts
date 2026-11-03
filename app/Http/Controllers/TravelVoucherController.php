@@ -205,6 +205,21 @@ class TravelVoucherController extends Controller
         return redirect()->route('travel-vouchers.show', $travelVoucher)->with('success', 'Voucher updated successfully!');
     }
 
+    public function destroy(TravelVoucher $travelVoucher)
+    {
+        $user = auth()->user();
+        if (!$user || (!$user->isSuperAdmin() && !$user->hasRole(['Super Admin', 'Admin', 'super-admin', 'admin']) && !$user->canDo('travel_vouchers.delete'))) {
+            abort(403, 'Unauthorized. Only administrators can delete travel vouchers.');
+        }
+
+        $travelGroupId = $travelVoucher->travel_group_id;
+        $voucherNumber = $travelVoucher->voucher_number;
+        $travelVoucher->delete();
+
+        return redirect()->route('travel-groups.show', $travelGroupId)
+            ->with('success', "Travel Voucher {$voucherNumber} has been deleted successfully.");
+    }
+
     public function print(TravelVoucher $travelVoucher)
     {
         $travelVoucher->load('travelGroup.flights');

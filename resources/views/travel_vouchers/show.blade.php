@@ -12,6 +12,15 @@
         <a href="{{ route('travel-groups.show', $travelVoucher->travelGroup->id) }}" class="btn btn-light border"><i class="bi bi-arrow-left"></i> Back to Group</a>
         <a href="{{ route('travel-vouchers.edit', $travelVoucher->id) }}" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> Edit Voucher</a>
         <a href="{{ route('travel-vouchers.print', $travelVoucher->id) }}" target="_blank" class="btn btn-primary"><i class="bi bi-printer"></i> Print / Download PDF</a>
+        @if(auth()->user() && (auth()->user()->isSuperAdmin() || auth()->user()->hasRole(['Super Admin', 'Admin', 'super-admin', 'admin']) || auth()->user()->canDo('travel_vouchers.delete')))
+        <form action="{{ route('travel-vouchers.destroy', $travelVoucher->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete Voucher {{ $travelVoucher->voucher_number }}? This action cannot be undone.');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-outline-danger">
+                <i class="bi bi-trash"></i> Delete Voucher
+            </button>
+        </form>
+        @endif
     </div>
 </div>
 

@@ -230,10 +230,21 @@
                                         <td>{{ $voucher->pax }}</td>
                                         <td><small class="text-muted">{{ Str::limit($voucher->comments ?: $voucher->special_instructions, 25) }}</small></td>
                                         <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="{{ route('travel-vouchers.show', $voucher->id) }}" class="btn btn-light border" title="View"><i class="bi bi-eye"></i></a>
-                                                <a href="{{ route('travel-vouchers.edit', $voucher->id) }}" class="btn btn-light border" title="Edit"><i class="bi bi-pencil"></i></a>
-                                                <a href="{{ route('travel-vouchers.print', $voucher->id) }}" target="_blank" class="btn btn-light border text-primary" title="Print"><i class="bi bi-printer"></i></a>
+                                            <div class="d-flex gap-1 justify-content-start align-items-center">
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{{ route('travel-vouchers.show', $voucher->id) }}" class="btn btn-light border" title="View"><i class="bi bi-eye"></i></a>
+                                                    <a href="{{ route('travel-vouchers.edit', $voucher->id) }}" class="btn btn-light border" title="Edit"><i class="bi bi-pencil"></i></a>
+                                                    <a href="{{ route('travel-vouchers.print', $voucher->id) }}" target="_blank" class="btn btn-light border text-primary" title="Print"><i class="bi bi-printer"></i></a>
+                                                </div>
+                                                @if(auth()->user() && (auth()->user()->isSuperAdmin() || auth()->user()->hasRole(['Super Admin', 'Admin', 'super-admin', 'admin']) || auth()->user()->canDo('travel_vouchers.delete')))
+                                                <form action="{{ route('travel-vouchers.destroy', $voucher->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Are you sure you want to delete Voucher {{ $voucher->voucher_number }}? This action cannot be undone.');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-light border text-danger" title="Delete Voucher">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

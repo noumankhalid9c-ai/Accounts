@@ -95,4 +95,95 @@ class TravelVoucherTest extends TestCase
         $group->flights()->forceDelete();
         $group->forceDelete();
     }
+
+    public function test_admin_can_delete_travel_voucher(): void
+    {
+        $superAdmin = User::where('role_id', 1)->first() ?? User::factory()->create(['role_id' => 1]);
+
+        $group = TravelGroup::create([
+            'group_id' => 'GRP-DEL-' . rand(1000, 9999),
+            'group_name' => 'Delete Test Group',
+            'service_type' => 'Umrah',
+            'status' => 'Active',
+            'departure_date' => '2026-11-01',
+            'return_date' => '2026-11-15',
+        ]);
+
+        $voucher = TravelVoucher::create([
+            'travel_group_id' => $group->id,
+            'voucher_number' => 'VOU-DEL-' . rand(10000, 99999),
+            'voucher_type' => 'Umrah',
+            'voucher_date' => '2026-11-03',
+            'pax' => 2,
+            'qr_token' => \Illuminate\Support\Str::random(32),
+            'created_by' => $superAdmin->id,
+        ]);
+
+        // Verify admin sees delete option on group show and voucher show
+        $groupShowResponse = $this->actingAs($superAdmin)->get(route('travel-groups.show', $group->id));
+        $groupShowResponse->assertStatus(200);
+        $groupShowResponse->assertSee('title="Delete Voucher"', false);
+
+        $voucherShowResponse = $this->actingAs($superAdmin)->get(route('travel-vouchers.show', $voucher->id));
+        $voucherShowResponse->assertStatus(200);
+        $voucherShowResponse->assertSee('Delete Voucher');
+
+        // Perform delete as admin
+        $deleteResponse = $this->actingAs($superAdmin)
+            ->delete(route('travel-vouchers.destroy', $voucher->id));
+
+        $deleteResponse->assertRedirect(route('travel-groups.show', $group->id));
+        $deleteResponse->assertSessionHas('success');
+
+        $this->assertDatabaseMissing('travel_vouchers', ['id' => $voucher->id]);
+
+        $group->forceDelete();
+    }
+
+    public function test_non_admin_cannot_delete_travel_voucher(): void
+    {
+        $superAdmin = User::where('role_id', 1)->first() ?? User::factory()->create(['role_id' => 1]);
+        $salesUser = User::where('role_id', 4)->first() ?? User::factory()->create(['role_id' => 4]);
+
+        $group = TravelGroup::create([
+            'group_id' => 'GRP-DEL2-' . rand(1000, 9999),
+            'group_name' => 'Delete Restrict Test Group',
+            'service_type' => 'Umrah',
+            'status' => 'Active',
+            'departure_date' => '2026-11-01',
+            'return_date' => '2026-11-15',
+        ]);
+
+        $voucher = TravelVoucher::create([
+            'travel_group_id' => $group->id,
+            'voucher_number' => 'VOU-RESTRICT-' . rand(10000, 99999),
+            'voucher_type' => 'Umrah',
+            'voucher_date' => '2026-11-03',
+            'pax' => 2,
+            'qr_token' => \Illuminate\Support\Str::random(32),
+            'created_by' => $superAdmin->id,
+        ]);
+
+        // Verify non-admin DOES NOT see delete button on group show and voucher show
+        $groupShowResponse = $this->actingAs($salesUser)->get(route('travel-groups.show', $group->id));
+        $groupShowResponse->assertStatus(200);
+        $groupShowResponse->assertDontSee('title="Delete Voucher"', false);
+
+        $voucherShowResponse = $this->actingAs($salesUser)->get(route('travel-vouchers.show', $voucher->id));
+        $voucherShowResponse->assertStatus(200);
+        $voucherShowResponse->assertDontSee('Delete Voucher');
+
+        // Attempt delete as non-admin -> must be rejected (403 Forbidden)
+        $deleteResponse = $this->actingAs($salesUser)
+            ->delete(route('travel-vouchers.destroy', $voucher->id));
+
+        $deleteResponse->assertStatus(403);
+
+        // Voucher must still exist
+        $this->assertDatabaseHas('travel_vouchers', ['id' => $voucher->id]);
+
+        // Clean up
+        $voucher->forceDelete();
+        $group->forceDelete();
+    }
 }

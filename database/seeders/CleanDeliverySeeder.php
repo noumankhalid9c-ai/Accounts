@@ -39,6 +39,7 @@ class CleanDeliverySeeder extends Seeder
             'polio_certificate_invoices',
             'salaries',
             'employees',
+            'user_permissions',
             'monthly_expenses',
             'petty_cash_transactions',
             'petty_cash_days',
@@ -526,3 +527,4 @@ class CleanDeliverySeeder extends Seeder
         ]);
     }
 }
+

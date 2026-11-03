@@ -113,6 +113,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/travel-vouchers/{travel_voucher}', [\App\Http\Controllers\TravelVoucherController::class, 'show'])->name('travel-vouchers.show');
     Route::get('/travel-vouchers/{travel_voucher}/edit', [\App\Http\Controllers\TravelVoucherController::class, 'edit'])->name('travel-vouchers.edit');
     Route::put('/travel-vouchers/{travel_voucher}', [\App\Http\Controllers\TravelVoucherController::class, 'update'])->name('travel-vouchers.update');
+    Route::delete('/travel-vouchers/{travel_voucher}', [\App\Http\Controllers\TravelVoucherController::class, 'destroy'])->name('travel-vouchers.destroy');
     Route::get('/travel-vouchers/{travel_voucher}/print', [\App\Http\Controllers\TravelVoucherController::class, 'print'])->name('travel-vouchers.print');
 
     Route::get('/settings', [\App\Http\Controllers\SecuritySettingController::class, 'index'])->name('settings.index');
